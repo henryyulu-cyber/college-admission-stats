@@ -1,0 +1,70 @@
+{{define "content"}}
+<!-- 主頁面容器 -->
+<div class="space-y-6">
+    <!-- 頁面標題與操作控制列 -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
+                    <span class="p-2 bg-rose-500/10 text-rose-400 rounded-lg">🏥</span>
+                    醫牙中錄取專區 · 深度交叉統計
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">獨立分析全台各高中錄取「醫學系」、「牙醫學系」與「中醫學系」之人數規模、大學名額分佈與生源流向</p>
+            </div>
+
+            <!-- HTMX 篩選表單 -->
+            <form id="medical-form" class="flex flex-wrap items-center gap-2.5"
+                  hx-get="/medical"
+                  hx-target="#medical-content"
+                  hx-swap="outerHTML">
+                
+                <!-- 雙向交叉視角切換 (模式) -->
+                <div class="bg-slate-950/80 p-1 rounded-lg border border-slate-800 flex items-center">
+                    <label class="px-2.5 py-1 text-xs font-medium rounded-md cursor-pointer transition-colors {{if eq .SelectedMode "hs_rank"}}bg-rose-500 text-white shadow-sm{{else}}text-slate-400 hover:text-white{{end}}">
+                        <input type="radio" name="mode" value="hs_rank" class="hidden" {{if eq .SelectedMode "hs_rank"}}checked{{end}} onchange="document.getElementById('medical-form').dispatchEvent(new Event('submit'))">
+                        🏫 高中排行榜
+                    </label>
+                    <label class="px-2.5 py-1 text-xs font-medium rounded-md cursor-pointer transition-colors {{if eq .SelectedMode "univ_source"}}bg-rose-500 text-white shadow-sm{{else}}text-slate-400 hover:text-white{{end}}">
+                        <input type="radio" name="mode" value="univ_source" class="hidden" {{if eq .SelectedMode "univ_source"}}checked{{end}} onchange="document.getElementById('medical-form').dispatchEvent(new Event('submit'))">
+                        🎓 大學生源分析
+                    </label>
+                </div>
+
+                <!-- 學年度篩選下拉選單 -->
+                <div class="relative">
+                    <select name="year" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500 cursor-pointer" onchange="document.getElementById('medical-form').dispatchEvent(new Event('submit'))">
+                        <option value="0" {{if eq .SelectedYear 0}}selected{{end}}>全部學年度 (110~115)</option>
+                        {{range .Options.Years}}
+                        <option value="{{.}}" {{if eq $.SelectedYear .}}selected{{end}}>{{.}} 學年度</option>
+                        {{end}}
+                    </select>
+                </div>
+
+                <!-- 科系篩選下拉選單 (全部醫牙中 / 僅醫學 / 僅牙醫 / 僅中醫) -->
+                <div class="relative">
+                    <select name="dept" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500 cursor-pointer" onchange="document.getElementById('medical-form').dispatchEvent(new Event('submit'))">
+                        <option value="all" {{if eq .SelectedDept "all"}}selected{{end}}>全部醫牙中 (醫學+牙醫+中醫)</option>
+                        <option value="med" {{if eq .SelectedDept "med"}}selected{{end}}>僅醫學系</option>
+                        <option value="dent" {{if eq .SelectedDept "dent"}}selected{{end}}>僅牙醫學系</option>
+                        <option value="chinese_med" {{if eq .SelectedDept "chinese_med"}}selected{{end}}>僅中醫學系</option>
+                    </select>
+                </div>
+
+                <!-- 大學院校下拉選單 (僅在大學生源模式下可選) -->
+                {{if eq .SelectedMode "univ_source"}}
+                <div class="relative">
+                    <select name="univ" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500 cursor-pointer" onchange="document.getElementById('medical-form').dispatchEvent(new Event('submit'))">
+                        {{range .MedicalUnivs}}
+                        <option value="{{.}}" {{if eq $.SelectedUniv .}}selected{{end}}>{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                {{end}}
+            </form>
+        </div>
+    </div>
+
+    <!-- 局部置換內容容器 -->
+    {{template "medical_partial.html" .}}
+</div>
+{{end}}

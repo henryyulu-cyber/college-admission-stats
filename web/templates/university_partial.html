@@ -1,0 +1,54 @@
+<!-- 大學來源高中局部置換容器 -->
+<div id="university-content" class="space-y-6">
+    <!-- 來源高中排行榜卡片 -->
+    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
+            <div>
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span>🏫 學生來源高中排行 (Top 25)</span>
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                        {{.SelectedUniv}} {{if .SelectedDept}}· {{.SelectedDept}}{{end}}
+                    </span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">統計錄取/就讀該大學系所之全台高中人數分佈</p>
+            </div>
+            <div class="text-xs text-slate-400">
+                學年度：<span class="text-white font-medium">{{if eq .SelectedYear 0}}全部學年累計{{else}}{{.SelectedYear}} 學年度{{end}}</span>
+            </div>
+        </div>
+
+        <!-- 排行列表 -->
+        <div class="space-y-3.5">
+            {{range $idx, $origin := .Origins}}
+            <div class="p-3 bg-slate-950/60 rounded-lg border border-slate-800/80 hover:border-slate-700 transition-colors">
+                <div class="flex justify-between items-center text-xs mb-1.5">
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 flex items-center justify-center rounded-full text-[11px] font-bold {{if lt $idx 3}}bg-sky-500 text-slate-950{{else}}bg-slate-800 text-slate-400{{end}}">
+                            {{$idx}}
+                        </span>
+                        <span class="font-semibold text-slate-200 text-sm">{{$origin.HighSchoolName}}</span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 border border-slate-700">
+                            {{$origin.City}}
+                        </span>
+                        <span class="px-1.5 py-0.5 rounded text-[10px] {{if eq $origin.SchoolType "公立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-amber-500/10 text-amber-400 border border-amber-500/20{{end}}">
+                            {{$origin.SchoolType}}
+                        </span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-sky-400 font-bold text-sm">{{$origin.StudentCount}} 人</span>
+                        <span class="text-slate-400 text-xs ml-1">({{$origin.Percentage}}%)</span>
+                    </div>
+                </div>
+                <!-- 佔比進度條 -->
+                <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                    <div class="bg-gradient-to-r from-sky-500 to-indigo-500 h-2 rounded-full" style="width: {{$origin.Percentage}}%"></div>
+                </div>
+            </div>
+            {{else}}
+            <div class="text-center py-12 text-slate-500 text-sm">
+                查無符合條件之來源高中資料
+            </div>
+            {{end}}
+        </div>
+    </div>
+</div>

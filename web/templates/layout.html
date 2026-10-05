@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- 設定網頁語系為繁體中文 -->
+<html lang="zh-TW" class="dark">
+<head>
+    <!-- 設定字符編碼為 UTF-8 -->
+    <meta charset="UTF-8">
+    <!-- 設置響應式視區以支援行動端與桌機瀏覽 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 網頁標題 -->
+    <title>全台大學升學統計與篩選系統 (110~115學年度)</title>
+    <!-- 引入 Tailwind CSS CDN，提供現代化美觀 UI 樣式 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 HTMX 庫，實現無重新整理之局部 DOM 非同步置換 -->
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <!-- 引入 Chart.js 庫，提供互動式長條圖、圓餅圖與趨勢圖表 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 Alpine.js 輕量前端狀態管理庫，支援多選晶片標籤與級聯下拉互動 -->
+    <script defer src="https://unpkg.com/alpinejs@3.13.10/dist/cdn.min.js"></script>
+    <!-- 配置 Tailwind 暗黑模式色彩主題 -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        darkbg: '#0f172a',
+                        darkcard: '#1e293b',
+                        darkborder: '#334155',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 滾動條美化樣式 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+    <!-- 頂部全站導覽列 -->
+    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- 品牌 Logo 與系統標題 -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                    <!-- 圖書/學位帽圖標 -->
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                        大學升學統計與篩選中心
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">110 ~ 115 學年度</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">教育部開放資料與全台高中升學流向交叉分析系統</p>
+                </div>
+            </div>
+
+            <!-- 功能分頁導覽列 -->
+            <nav class="hidden lg:flex items-center space-x-1">
+                <a href="/" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    🏫 高中升學流向
+                </a>
+                <a href="/medical" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    🏥 醫牙中專區
+                </a>
+                <a href="/disciplines" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    📊 學群系所分析
+                </a>
+                <a href="/university" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "university"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    🎓 大學生源分析
+                </a>
+                <a href="/group" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "group"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    📈 18學群趨勢
+                </a>
+                <a href="/explore" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    🔍 明細即時檢索
+                </a>
+                <a href="/sync" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
+                    🔄 數據同步中心
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主體內容注入區 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {{block "content" .}}{{end}}
+    </main>
+
+    <!-- 底部頁尾 -->
+    <footer class="border-t border-slate-800/80 bg-slate-900/50 py-4 mt-auto text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <span>全台大專校院與高中升學大數據分析平台 &copy; 110-115 學年度</span>
+            <span class="text-slate-600">依據 Go + Echo + HTMX 極簡架構與現代 UI 規範實作</span>
+        </div>
+    </footer>
+</body>
+</html>

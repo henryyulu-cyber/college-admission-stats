@@ -1,0 +1,175 @@
+{{define "explore_table_partial.html"}}
+<!-- 局部置換明細表格區 -->
+<div id="explore-table-container" class="space-y-4">
+    <div class="flex justify-between items-center text-xs text-slate-400">
+        <div>
+            共查詢到 <span class="text-sky-400 font-bold">{{.Result.TotalCount}}</span> 筆升學記錄 · 第 {{.Result.Page}} / {{.Result.TotalPages}} 頁
+        </div>
+        <div>
+            每頁顯示 {{.Result.PageSize}} 筆
+        </div>
+    </div>
+
+    <!-- 表格主體 -->
+    <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm">
+        <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <tr>
+                    <th class="px-4 py-3">學年度</th>
+                    <th class="px-4 py-3">高中學校</th>
+                    <th class="px-4 py-3">縣市/公私立</th>
+                    <th class="px-4 py-3">錄取大學</th>
+                    <th class="px-4 py-3">大學體系</th>
+                    <th class="px-4 py-3">18 大學群</th>
+                    <th class="px-4 py-3">錄取學系</th>
+                    <th class="px-4 py-3 text-right">升學人數</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+                {{range .Result.Records}}
+                <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="px-4 py-3 font-medium text-white whitespace-nowrap">{{.AcademicYear}}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-200">{{.HighSchoolName}}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="text-slate-400">{{.HighSchoolCity}}</span>
+                        <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] {{if eq .HighSchoolType "公立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-amber-500/10 text-amber-400 border border-amber-500/20{{end}}">
+                            {{.HighSchoolType}}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-semibold text-slate-200">{{.UniversityName}}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] {{if eq .UniversityType "國立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-slate-800 text-slate-300 border border-slate-700{{end}}">
+                            {{.UniversityType}}
+                        </span>
+                        <span class="ml-1 text-[10px] text-slate-400">{{.UniversitySystem}}</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                            {{.DisciplineGroup}}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-slate-200">{{.DepartmentName}}</td>
+                    <td class="px-4 py-3 text-right font-bold text-sky-400 whitespace-nowrap">{{.StudentCount}} 人</td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="8" class="text-center py-12 text-slate-500">查無符合條件之升學記錄</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分頁導航列 -->
+    {{if gt .Result.TotalPages 1}}
+    <div class="flex justify-between items-center pt-2">
+        <div>
+            {{if gt .Result.Page 1}}
+            <button class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-300 transition-colors"
+                    hx-get="/explore?page={{sub .Result.Page 1}}&academic_year={{.Filter.AcademicYear}}&high_school={{.Filter.HighSchool}}&university={{.Filter.University}}&discipline_group={{.Filter.DisciplineGroup}}&keyword={{.Filter.Keyword}}"
+                    hx-target="#explore-table-container"
+                    hx-swap="outerHTML">
+                &larr; 上一頁
+            </button>
+            {{end}}
+        </div>
+        <div class="text-xs text-slate-400">
+            第 {{.Result.Page}} 頁，共 {{.Result.TotalPages}} 頁
+        </div>
+        <div>
+            {{if lt .Result.Page .Result.TotalPages}}
+            <button class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-300 transition-colors"
+                    hx-get="/explore?page={{add .Result.Page 1}}&academic_year={{.Filter.AcademicYear}}&high_school={{.Filter.HighSchool}}&university={{.Filter.University}}&discipline_group={{.Filter.DisciplineGroup}}&keyword={{.Filter.Keyword}}"
+                    hx-target="#explore-table-container"
+                    hx-swap="outerHTML">
+                下一頁 &rarr;
+            </button>
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+</div>
+{{end}}
+
+{{template "layout.html" .}}
+{{define "content"}}
+<div class="space-y-6">
+    <!-- 複合篩選面板 -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <form class="space-y-4"
+              hx-get="/explore"
+              hx-target="#explore-table-container"
+              hx-swap="outerHTML"
+              hx-trigger="change from:select, keyup changed delay:400ms from:input[type='text'], submit">
+            
+            <!-- 第一行：搜尋關鍵字與學年 -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                <div class="md:col-span-6">
+                    <label for="search-input" class="block text-xs font-medium text-slate-300 mb-1.5">全文模糊搜尋 (高中 / 大學 / 學系 / 縣市)</label>
+                    <input type="text" id="search-input" name="keyword" value="{{.Filter.Keyword}}" placeholder="請輸入關鍵字即時過濾..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                </div>
+                <div class="md:col-span-3">
+                    <label for="explore-year-select" class="block text-xs font-medium text-slate-300 mb-1.5">學年度</label>
+                    <select id="explore-year-select" name="academic_year" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                        <option value="0" {{if eq 0 $.Filter.AcademicYear}}selected{{end}}>全部學年度</option>
+                        {{range .Options.Years}}
+                        <option value="{{.}}" {{if eq . $.Filter.AcademicYear}}selected{{end}}>{{.}} 學年度</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <label for="explore-group-select" class="block text-xs font-medium text-slate-300 mb-1.5">18 大學群</label>
+                    <select id="explore-group-select" name="discipline_group" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                        <option value="" {{if eq "" $.Filter.DisciplineGroup}}selected{{end}}>全部學群</option>
+                        {{range .Options.Groups}}
+                        <option value="{{.}}" {{if eq . $.Filter.DisciplineGroup}}selected{{end}}>{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </div>
+
+            <!-- 第二行：大學體系、公私立與匯出按鈕 -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                <div class="md:col-span-3">
+                    <label for="explore-city-select" class="block text-xs font-medium text-slate-300 mb-1.5">高中所在縣市</label>
+                    <select id="explore-city-select" name="high_school_city" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                        <option value="" {{if eq "" $.Filter.HighSchoolCity}}selected{{end}}>全部縣市</option>
+                        {{range .Options.Cities}}
+                        <option value="{{.}}" {{if eq . $.Filter.HighSchoolCity}}selected{{end}}>{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <label for="explore-type-select" class="block text-xs font-medium text-slate-300 mb-1.5">大學公私立</label>
+                    <select id="explore-type-select" name="university_type" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                        <option value="" {{if eq "" $.Filter.UniversityType}}selected{{end}}>全部公私立</option>
+                        <option value="國立" {{if eq "國立" $.Filter.UniversityType}}selected{{end}}>國立</option>
+                        <option value="私立" {{if eq "私立" $.Filter.UniversityType}}selected{{end}}>私立</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3">
+                    <label for="explore-system-select" class="block text-xs font-medium text-slate-300 mb-1.5">大學體系</label>
+                    <select id="explore-system-select" name="university_system" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                        <option value="" {{if eq "" $.Filter.UniversitySystem}}selected{{end}}>全部體系</option>
+                        <option value="一般大學" {{if eq "一般大學" $.Filter.UniversitySystem}}selected{{end}}>一般大學</option>
+                        <option value="技專校院" {{if eq "技專校院" $.Filter.UniversitySystem}}selected{{end}}>技專校院 (科大)</option>
+                    </select>
+                </div>
+                <div class="md:col-span-3 flex space-x-2">
+                    <button type="submit" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-sky-600/30">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        篩選
+                    </button>
+                    <a href="/export/csv" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-emerald-600/30" title="一鍵匯出當前所有篩選結果為 CSV">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        匯出 CSV
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 動態置換表格 -->
+    {{template "explore_table_partial.html" .}}
+</div>
+{{end}}

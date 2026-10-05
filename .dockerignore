@@ -1,0 +1,11 @@
+# Docker 建置時忽略之本地暫存與二進位檔案
+.git
+.github
+*.exe
+app.exe
+*.bat
+*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db

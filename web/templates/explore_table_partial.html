@@ -1,0 +1,90 @@
+<!-- 局部置換明細表格區 -->
+<div id="explore-table-container" class="space-y-4">
+    <div class="flex justify-between items-center text-xs text-slate-400">
+        <div>
+            共查詢到 <span class="text-sky-400 font-bold">{{.Result.TotalCount}}</span> 筆升學記錄 · 第 {{.Result.Page}} / {{.Result.TotalPages}} 頁
+        </div>
+        <div>
+            每頁顯示 {{.Result.PageSize}} 筆
+        </div>
+    </div>
+
+    <!-- 表格主體 -->
+    <div class="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/90 shadow-sm">
+        <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950/80 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <tr>
+                    <th class="px-4 py-3">學年度</th>
+                    <th class="px-4 py-3">高中學校</th>
+                    <th class="px-4 py-3">縣市/公私立</th>
+                    <th class="px-4 py-3">錄取大學</th>
+                    <th class="px-4 py-3">大學體系</th>
+                    <th class="px-4 py-3">18 大學群</th>
+                    <th class="px-4 py-3">錄取學系</th>
+                    <th class="px-4 py-3 text-right">升學人數</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+                {{range .Result.Records}}
+                <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="px-4 py-3 font-medium text-white whitespace-nowrap">{{.AcademicYear}}</td>
+                    <td class="px-4 py-3 font-semibold text-slate-200">{{.HighSchoolName}}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="text-slate-400">{{.HighSchoolCity}}</span>
+                        <span class="ml-1 px-1.5 py-0.5 rounded text-[10px] {{if eq .HighSchoolType "公立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-amber-500/10 text-amber-400 border border-amber-500/20{{end}}">
+                            {{.HighSchoolType}}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-semibold text-slate-200">{{.UniversityName}}</td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-1.5 py-0.5 rounded text-[10px] {{if eq .UniversityType "國立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-slate-800 text-slate-300 border border-slate-700{{end}}">
+                            {{.UniversityType}}
+                        </span>
+                        <span class="ml-1 text-[10px] text-slate-400">{{.UniversitySystem}}</span>
+                    </td>
+                    <td class="px-4 py-3 whitespace-nowrap">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                            {{.DisciplineGroup}}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-slate-200">{{.DepartmentName}}</td>
+                    <td class="px-4 py-3 text-right font-bold text-sky-400 whitespace-nowrap">{{.StudentCount}} 人</td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="8" class="text-center py-12 text-slate-500">查無符合條件之升學記錄</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分頁導航列 -->
+    {{if gt .Result.TotalPages 1}}
+    <div class="flex justify-between items-center pt-2">
+        <div>
+            {{if gt .Result.Page 1}}
+            <button class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-300 transition-colors"
+                    hx-get="/explore?page={{sub .Result.Page 1}}&academic_year={{.Filter.AcademicYear}}&high_school={{.Filter.HighSchool}}&university={{.Filter.University}}&discipline_group={{.Filter.DisciplineGroup}}&keyword={{.Filter.Keyword}}"
+                    hx-target="#explore-table-container"
+                    hx-swap="outerHTML">
+                &larr; 上一頁
+            </button>
+            {{end}}
+        </div>
+        <div class="text-xs text-slate-400">
+            第 {{.Result.Page}} 頁，共 {{.Result.TotalPages}} 頁
+        </div>
+        <div>
+            {{if lt .Result.Page .Result.TotalPages}}
+            <button class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-300 transition-colors"
+                    hx-get="/explore?page={{add .Result.Page 1}}&academic_year={{.Filter.AcademicYear}}&high_school={{.Filter.HighSchool}}&university={{.Filter.University}}&discipline_group={{.Filter.DisciplineGroup}}&keyword={{.Filter.Keyword}}"
+                    hx-target="#explore-table-container"
+                    hx-swap="outerHTML">
+                下一頁 &rarr;
+            </button>
+            {{end}}
+        </div>
+    </div>
+    {{end}}
+</div>

@@ -1,0 +1,22 @@
+# 編譯生成的二進位執行檔
+*.exe
+app.exe
+server
+
+# 本地環境變數設定檔
+.env
+.env.local
+
+# 系統日誌與暫存
+*.log
+*.tmp
+*.temp
+
+# 本地 SQLite 資料庫 (雲端啟動時會自動完成 28 萬筆真實升學大數據秒級初始化)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+
+# 作業系統特定檔案
+.DS_Store
+Thumbs.db

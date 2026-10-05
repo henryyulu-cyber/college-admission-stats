@@ -1,0 +1,109 @@
+{{define "group_partial.html"}}
+<!-- 學群趨勢局部置換容器 -->
+<div id="group-content" class="space-y-6">
+    <!-- 跨年度趨勢與熱門科系區塊 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- 110~115 跨年度升學趨勢 -->
+        <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
+            <h3 class="text-base font-bold text-white mb-4 flex items-center justify-between">
+                <span>📈 110 ~ 115 學年度升學趨勢</span>
+                <span class="text-xs font-normal text-sky-400">{{.SelectedGroup}}</span>
+            </h3>
+            <div class="space-y-3">
+                {{range .Trends}}
+                <div class="p-3 bg-slate-950/60 rounded-lg border border-slate-800/80">
+                    <div class="flex justify-between text-xs font-medium mb-1">
+                        <span class="text-slate-300 font-semibold">{{.AcademicYear}} 學年度</span>
+                        <span class="text-sky-400 font-bold">{{.StudentCount}} 位錄取生</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                </div>
+                {{else}}
+                <div class="text-center py-8 text-slate-500 text-sm">無跨年度趨勢資料</div>
+                {{end}}
+            </div>
+        </div>
+
+        <!-- 該學群熱門校系 Top 15 -->
+        <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
+            <h3 class="text-base font-bold text-white mb-4 flex items-center justify-between">
+                <span>🏆 {{.SelectedGroup}} 熱門校系排行 Top 15</span>
+                <span class="text-xs font-normal text-slate-400">依總錄取人數排序</span>
+            </h3>
+            <div class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1">
+                {{range $idx, $dept := .TopDepts}}
+                <div class="p-2.5 bg-slate-950/60 rounded-lg border border-slate-800/80 hover:border-slate-700 transition-colors flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="w-5 h-5 flex items-center justify-center rounded-full text-[11px] font-bold {{if lt $idx 3}}bg-amber-400 text-slate-950{{else}}bg-slate-800 text-slate-400{{end}}">
+                            {{$idx}}
+                        </span>
+                        <div>
+                            <div class="text-xs font-bold text-white">{{$dept.UniversityName}}</div>
+                            <div class="text-xs text-slate-300">{{$dept.DepartmentName}}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-emerald-400 font-bold text-sm">{{$dept.StudentCount}} 人</span>
+                        <span class="block text-[10px] text-slate-500">{{$dept.DisciplineGroup}}</span>
+                    </div>
+                </div>
+                {{else}}
+                <div class="text-center py-8 text-slate-500 text-sm">無熱門科系資料</div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{template "layout.html" .}}
+{{define "content"}}
+<div class="space-y-6">
+    <!-- 頂部篩選面板 -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <form class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end"
+              hx-get="/group"
+              hx-target="#group-content"
+              hx-swap="outerHTML"
+              hx-trigger="change from:select, submit">
+            <!-- 18 大學群選擇 -->
+            <div class="md:col-span-6">
+                <label for="group-select" class="block text-xs font-medium text-slate-300 mb-1.5">選擇教育部 18 大學群</label>
+                <select id="group-select" name="group" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                    {{range .Options.Groups}}
+                    <option value="{{.}}" {{if eq . $.SelectedGroup}}selected{{end}}>{{.}}</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- 學年度選擇 -->
+            <div class="md:col-span-3">
+                <label for="group-year-select" class="block text-xs font-medium text-slate-300 mb-1.5">學年度</label>
+                <select id="group-year-select" name="year" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3.5 py-2 text-sm text-white focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none">
+                    <option value="0" {{if eq 0 $.SelectedYear}}selected{{end}}>全部學年累計</option>
+                    {{range .Options.Years}}
+                    <option value="{{.}}" {{if eq . $.SelectedYear}}selected{{end}}>{{.}} 學年度</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- 查詢與匯出 -->
+            <div class="md:col-span-3 flex space-x-2">
+                <button type="submit" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-sky-600/30">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    學群統計
+                </button>
+                <a href="/export/csv?discipline_group={{.SelectedGroup}}&academic_year={{.SelectedYear}}" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-center gap-1" title="匯出該學群 CSV 報表">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    匯出
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- 動態置換內容 -->
+    {{template "group_partial.html" .}}
+</div>
+{{end}}

@@ -1,0 +1,507 @@
+{{define "content"}}
+<!-- 主容器：使用 Alpine.js 管理多選標籤與級聯下拉狀態 -->
+<div class="space-y-6" x-data="highSchoolFilter()" x-init="init()">
+    <!-- 頂部多條件篩選控制面板 -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+        <!-- 標題與說明 -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <span>🔍 高中升學流向多維度篩選器</span>
+                    <span class="text-xs font-normal text-slate-400">(支援高中多選、大學多選、科系級聯連動)</span>
+                </h3>
+                <p class="text-xs text-slate-400 mt-0.5">多選 2 所或以上高中且未限制特定大學/科系時，系統將自動切換為「多校 6 大指標橫向對比總表」與「分組長條圖」</p>
+            </div>
+            <!-- 快捷操作：清空重設 -->
+            <div class="flex items-center gap-2">
+                <button @click="resetFilters()" type="button" class="text-xs text-slate-400 hover:text-white px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors flex items-center gap-1 border border-slate-700">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    重設條件
+                </button>
+            </div>
+        </div>
+
+        <!-- 篩選器表單網格 -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+            <!-- 1. 選擇高中學校 (支援多選 Chip 標籤) -->
+            <div class="md:col-span-4 relative" @click.away="showSchoolDropdown = false">
+                <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span>🏫 選擇高中學校 (可多選)</span>
+                    <span class="text-[11px] text-sky-400" x-text="'已選 ' + selectedSchools.length + ' 所'"></span>
+                </label>
+                
+                <!-- 選取之高中 Chip 晶片標籤容器與點選展開輸入框 -->
+                <div class="min-h-[42px] bg-slate-950 border border-slate-700 rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-sky-500"
+                     @click="showSchoolDropdown = true">
+                    <template x-for="school in selectedSchools" :key="school">
+                        <span class="inline-flex items-center gap-1 bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs px-2 py-0.5 rounded-md font-medium">
+                            <span x-text="school"></span>
+                            <button type="button" @click.stop="removeSchool(school)" class="text-sky-400 hover:text-white">&times;</button>
+                        </span>
+                    </template>
+                    <input type="text" 
+                           x-model="schoolSearch" 
+                           @focus="showSchoolDropdown = true"
+                           placeholder="點此搜尋/新增高中..." 
+                           class="bg-transparent border-none outline-none text-xs text-white placeholder-slate-500 flex-1 min-w-[120px] px-1 py-0.5">
+                </div>
+
+                <!-- 高中下拉選單 -->
+                <div x-show="showSchoolDropdown" x-cloak class="absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl z-30 max-h-72 overflow-y-auto p-2 space-y-2">
+                    <!-- 熱門標籤快捷點選 -->
+                    <div class="border-b border-slate-800 pb-2">
+                        <div class="text-[10px] text-slate-400 mb-1.5 flex items-center justify-between">
+                            <span>⚡ 熱門高中快捷點選：</span>
+                            <span class="text-slate-500">支援搜尋「台南」、「南一中」等</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1">
+                            <button type="button" @click.stop="toggleSchool('國立臺南第一高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('國立臺南第一高級中學') ? 'border border-sky-400 text-sky-300' : ''">臺南一中</button>
+                            <button type="button" @click.stop="toggleSchool('臺北市立建國高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('臺北市立建國高級中學') ? 'border border-sky-400 text-sky-300' : ''">建國中學</button>
+                            <button type="button" @click.stop="toggleSchool('臺北市立第一女子高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('臺北市立第一女子高級中學') ? 'border border-sky-400 text-sky-300' : ''">北一女中</button>
+                            <button type="button" @click.stop="toggleSchool('臺中市立臺中第一高級中等學校')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('臺中市立臺中第一高級中等學校') ? 'border border-sky-400 text-sky-300' : ''">臺中一中</button>
+                            <button type="button" @click.stop="toggleSchool('高雄市立高雄高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('高雄市立高雄高級中學') ? 'border border-sky-400 text-sky-300' : ''">高雄中學</button>
+                            <button type="button" @click.stop="toggleSchool('國立新竹高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-sky-600 text-slate-200 transition-colors" :class="selectedSchools.includes('國立新竹高級中學') ? 'border border-sky-400 text-sky-300' : ''">新竹高中</button>
+                        </div>
+                    </div>
+                    <!-- 高中清單列表 -->
+                    <div class="space-y-0.5">
+                        <template x-for="school in filteredSchools()" :key="school">
+                            <div @click="toggleSchool(school)" 
+                                 class="px-2.5 py-1.5 rounded-md text-xs cursor-pointer flex items-center justify-between transition-colors"
+                                 :class="selectedSchools.includes(school) ? 'bg-sky-500/20 text-sky-300 font-semibold' : 'text-slate-300 hover:bg-slate-800'">
+                                <span x-text="school"></span>
+                                <svg x-show="selectedSchools.includes(school)" class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                        </template>
+                        <div x-show="filteredSchools().length === 0" class="text-xs text-slate-500 text-center py-2">找不到相符高中 (可嘗試輸入簡稱如「南一中」或「臺南」)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 選單 1：錄取學校 (大學多選 Chip 標籤) -->
+            <div class="md:col-span-3 relative" @click.away="showUnivDropdown = false">
+                <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span>🎓 1. 錄取學校 (可多選)</span>
+                    <span class="text-[11px] text-emerald-400" x-text="selectedUnivs.length > 0 ? '已選 ' + selectedUnivs.length + ' 校' : '全部大學'"></span>
+                </label>
+                
+                <!-- 選取之大學 Chip 晶片標籤容器 -->
+                <div class="min-h-[42px] bg-slate-950 border border-slate-700 rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-emerald-500"
+                     @click="showUnivDropdown = true">
+                    <template x-for="univ in selectedUnivs" :key="univ">
+                        <span class="inline-flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs px-2 py-0.5 rounded-md font-medium">
+                            <span x-text="univ"></span>
+                            <button type="button" @click.stop="removeUniv(univ)" class="text-emerald-400 hover:text-white">&times;</button>
+                        </span>
+                    </template>
+                    <input type="text" 
+                           x-model="univSearch" 
+                           @focus="showUnivDropdown = true"
+                           placeholder="點此搜尋/新增大學..." 
+                           class="bg-transparent border-none outline-none text-xs text-white placeholder-slate-500 flex-1 min-w-[100px] px-1 py-0.5">
+                </div>
+
+                <!-- 大學下拉選單 -->
+                <div x-show="showUnivDropdown" x-cloak class="absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5">
+                    <template x-for="univ in filteredUnivs()" :key="univ">
+                        <div @click="toggleUniv(univ)" 
+                             class="px-2.5 py-1.5 rounded-md text-xs cursor-pointer flex items-center justify-between transition-colors"
+                             :class="selectedUnivs.includes(univ) ? 'bg-emerald-500/20 text-emerald-300 font-semibold' : 'text-slate-300 hover:bg-slate-800'">
+                            <span x-text="univ"></span>
+                            <svg x-show="selectedUnivs.includes(univ)" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                    </template>
+                    <div x-show="filteredUnivs().length === 0" class="text-xs text-slate-500 text-center py-2">找不到相符大學</div>
+                </div>
+            </div>
+
+            <!-- 3. 選單 2：錄取科系 (由選定大學級聯篩選，多選 Chip 標籤) -->
+            <div class="md:col-span-3 relative" @click.away="showDeptDropdown = false">
+                <label class="block text-xs font-medium text-slate-300 mb-1.5 flex items-center justify-between">
+                    <span>📚 2. 錄取科系 (級聯多選)</span>
+                    <span class="text-[11px] text-amber-400" x-text="selectedDepts.length > 0 ? '已選 ' + selectedDepts.length + ' 系' : '全部科系'"></span>
+                </label>
+                
+                <!-- 選取之科系 Chip 晶片標籤容器 -->
+                <div class="min-h-[42px] bg-slate-950 border border-slate-700 rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-amber-500"
+                     @click="showDeptDropdown = true">
+                    <template x-for="dept in selectedDepts" :key="dept">
+                        <span class="inline-flex items-center gap-1 bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs px-2 py-0.5 rounded-md font-medium">
+                            <span x-text="dept"></span>
+                            <button type="button" @click.stop="removeDept(dept)" class="text-amber-400 hover:text-white">&times;</button>
+                        </span>
+                    </template>
+                    <input type="text" 
+                           x-model="deptSearch" 
+                           @focus="showDeptDropdown = true"
+                           placeholder="點此搜尋/新增科系..." 
+                           class="bg-transparent border-none outline-none text-xs text-white placeholder-slate-500 flex-1 min-w-[100px] px-1 py-0.5">
+                </div>
+
+                <!-- 科系下拉選單 -->
+                <div x-show="showDeptDropdown" x-cloak class="absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl z-30 max-h-60 overflow-y-auto p-1.5">
+                    <div class="px-2 py-1 text-[11px] text-slate-400 border-b border-slate-800 flex justify-between">
+                        <span>可用科系清單 (<span x-text="availableDepts.length"></span>)</span>
+                        <span class="text-[10px] text-slate-500" x-show="selectedUnivs.length > 0">已依選定大學過濾</span>
+                    </div>
+                    <template x-for="dept in filteredDepts()" :key="dept">
+                        <div @click="toggleDept(dept)" 
+                             class="px-2.5 py-1.5 rounded-md text-xs cursor-pointer flex items-center justify-between transition-colors"
+                             :class="selectedDepts.includes(dept) ? 'bg-amber-500/20 text-amber-300 font-semibold' : 'text-slate-300 hover:bg-slate-800'">
+                            <span x-text="dept"></span>
+                            <svg x-show="selectedDepts.includes(dept)" class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                    </template>
+                    <div x-show="filteredDepts().length === 0" class="text-xs text-slate-500 text-center py-2">無符合科系</div>
+                </div>
+            </div>
+
+            <!-- 4. 學年度與查詢按鈕 -->
+            <div class="md:col-span-2 flex flex-col justify-between h-full space-y-2">
+                <div>
+                    <label for="year-select" class="block text-xs font-medium text-slate-300 mb-1.5">學年度 (110~115)</label>
+                    <select id="year-select" x-model.number="selectedYear" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:ring-2 focus:ring-sky-500 outline-none">
+                        <option value="0">全部學年度累計</option>
+                        {{range .Options.Years}}
+                        <option value="{{.}}">{{.}} 學年度</option>
+                        {{end}}
+                    </select>
+                </div>
+                
+                <div class="flex space-x-2 pt-1">
+                    <!-- 即時分析按鈕：透過 Alpine 觸發 HTMX 局部更新 -->
+                    <button type="button" @click="triggerHTMX()" class="flex-1 bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-sky-600/30">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        即時分析
+                    </button>
+                    <!-- CSV 匯出按鈕 -->
+                    <a :href="'/export/csv?high_school=' + encodeURIComponent(selectedSchools.join(',')) + '&academic_year=' + selectedYear" 
+                       class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-center gap-1" 
+                       title="匯出升學明細 CSV">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                        匯出
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 動態置換內容 (HTMX 局部置換目標) -->
+    {{template "highschool_partial.html" .}}
+</div>
+
+<!-- Alpine.js 多選與級聯篩選器控制器腳本 -->
+<script>
+    function highSchoolFilter() {
+        return {
+            // 已選取的高中陣列
+            selectedSchools: [{{range .SelectedSchools}}"{{.}}",{{end}}],
+            // 已選取的錄取大學陣列
+            selectedUnivs: [{{range .SelectedUnivs}}"{{.}}",{{end}}],
+            // 已選取的錄取科系陣列
+            selectedDepts: [{{range .SelectedDepts}}"{{.}}",{{end}}],
+            // 目前選取的學年度 (0 代表全部學年)
+            selectedYear: {{.SelectedYear}},
+
+            // 各欄位即時搜尋文字
+            schoolSearch: '',
+            univSearch: '',
+            deptSearch: '',
+
+            // 各下拉選單之展開/收合布林狀態
+            showSchoolDropdown: false,
+            showUnivDropdown: false,
+            showDeptDropdown: false,
+
+            // 全域基礎高中選項清單
+            allSchools: [{{range .Options.HighSchools}}"{{.}}",{{end}}],
+            // 全域基礎大學選項清單
+            allUnivs: [{{range .Options.Universities}}"{{.}}",{{end}}],
+            // 當前可選科系列表 (根據已選大學動態級聯更新)
+            availableDepts: [{{range .AvailableDepartments}}"{{.}}",{{end}}],
+
+            // 元件初始化邏輯
+            init() {
+                // 若初始無選取高中，預設選取建國中學
+                if (this.selectedSchools.length === 0) {
+                    this.selectedSchools = ["臺北市立建國高級中學"];
+                }
+            },
+
+            // 重設所有篩選條件為初始狀態
+            resetFilters() {
+                this.selectedSchools = ["臺北市立建國高級中學"];
+                this.selectedUnivs = [];
+                this.selectedDepts = [];
+                this.selectedYear = {{if .Options.Years}}{{index .Options.Years 0}}{{else}}0{{end}};
+                this.schoolSearch = '';
+                this.univSearch = '';
+                this.deptSearch = '';
+                this.refreshDepartments();
+                this.triggerHTMX();
+            },
+
+            // 取得過濾後的高中清單 (支援 臺/台 異體字互通、明星高中簡稱智慧匹配與多關鍵字比對)
+            filteredSchools() {
+                if (!this.schoolSearch) {
+                    // 未輸入關鍵字時，優先顯示熱門代表高中，接著展示全部高中清單
+                    return this.allSchools.slice(0, 100);
+                }
+
+                const rawKw = this.schoolSearch.trim().toLowerCase();
+                // 將「台」轉為「臺」進行標準化
+                const normKw = rawKw.replace(/台/g, '臺');
+
+                // 常見高中別名/簡稱智慧映射字典
+                const aliasMap = {
+                    '南一中': '臺南第一',
+                    '台南一中': '臺南第一',
+                    '臺南一中': '臺南第一',
+                    '南一': '臺南第一',
+                    '南女': '臺南女子',
+                    '台南女中': '臺南女子',
+                    '臺南女中': '臺南女子',
+                    '中一中': '臺中第一',
+                    '台中一中': '臺中第一',
+                    '臺中一中': '臺中第一',
+                    '中女中': '臺中女子',
+                    '台中女中': '臺中女子',
+                    '臺中女中': '臺中女子',
+                    '雄中': '高雄高級中學',
+                    '高雄中學': '高雄高級中學',
+                    '雄女': '高雄女子',
+                    '高雄女中': '高雄女子',
+                    '建中': '建國高級中學',
+                    '建國中學': '建國高級中學',
+                    '北一女': '第一女子',
+                    '北一女中': '第一女子',
+                    '北一': '第一女子',
+                    '師大附中': '師範大學附屬',
+                    '附中': '師範大學附屬',
+                    '竹中': '新竹高級中學',
+                    '新竹高中': '新竹高級中學',
+                    '竹女': '新竹女子',
+                    '新竹女中': '新竹女子',
+                    '嘉中': '嘉義高級中學',
+                    '嘉義高中': '嘉義高級中學',
+                    '嘉女': '嘉義女子',
+                    '嘉義女中': '嘉義女子',
+                    '彰中': '彰化高級中學',
+                    '彰化高中': '彰化高級中學',
+                    '彰女': '彰化女子',
+                    '彰化女中': '彰化女子',
+                    '武陵': '武陵高級中等學校',
+                    '武陵高中': '武陵高級中等學校',
+                    '成功高中': '成功高級中學',
+                    '中山女高': '中山女子',
+                    '松山高中': '松山高級中學'
+                };
+
+                const targetPattern = aliasMap[rawKw] || aliasMap[normKw] || normKw;
+
+                return this.allSchools.filter(school => {
+                    const normSchool = school.toLowerCase().replace(/台/g, '臺');
+                    const rawSchool = school.toLowerCase();
+
+                    // 1. 簡稱映射目標匹配 (如 "南一中" -> "臺南第一")
+                    if (normSchool.includes(targetPattern)) return true;
+
+                    // 2. 臺/台 互通標準化關鍵字比對
+                    if (normSchool.includes(normKw)) return true;
+
+                    // 3. 原始輸入關鍵字比對
+                    if (rawSchool.includes(rawKw)) return true;
+
+                    // 4. 多關鍵字空格分割比對 (例如 "臺南 一中" 或 "台南 一中")
+                    const parts = normKw.split(/\s+/);
+                    if (parts.length > 1 && parts.every(p => normSchool.includes(p))) {
+                        return true;
+                    }
+
+                    // 5. 模糊比對 "一中" 與 "第一高級中學"
+                    if (rawKw.includes('一中')) {
+                        const cityPrefix = normKw.replace('一中', '').trim();
+                        if (normSchool.includes('第一') && (cityPrefix === '' || normSchool.includes(cityPrefix))) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }).slice(0, 100);
+            },
+
+            // 取得過濾後的大學清單 (支援 臺/台 互通與知名大學簡稱智慧匹配)
+            filteredUnivs() {
+                if (!this.univSearch) return this.allUnivs.slice(0, 100);
+
+                const rawKw = this.univSearch.trim().toLowerCase();
+                const normKw = rawKw.replace(/台/g, '臺');
+
+                // 大學簡稱智慧映射字典
+                const univAliasMap = {
+                    '台大': '臺灣大學',
+                    '臺大': '臺灣大學',
+                    '清大': '清華大學',
+                    '清華': '清華大學',
+                    '交大': '陽明交通大學',
+                    '陽明交大': '陽明交通大學',
+                    '成大': '成功大學',
+                    '成功': '成功大學',
+                    '政大': '政治大學',
+                    '中興': '中興大學',
+                    '中央': '中央大學',
+                    '中山': '中山大學',
+                    '中正': '中正大學',
+                    '台科大': '臺灣科技大學',
+                    '臺科大': '臺灣科技大學',
+                    '台科': '臺灣科技大學',
+                    '北科大': '臺北科技大學',
+                    '北科': '臺北科技大學',
+                    '北醫': '臺北醫學大學',
+                    '高醫': '高雄醫學大學',
+                    '中國醫': '中國醫藥大學',
+                    '中山醫': '中山醫學大學',
+                    '長庚': '長庚大學',
+                    '馬偕': '馬偕醫學院',
+                    '慈濟': '慈濟大學'
+                };
+
+                const targetPattern = univAliasMap[rawKw] || univAliasMap[normKw] || normKw;
+
+                return this.allUnivs.filter(univ => {
+                    const normUniv = univ.toLowerCase().replace(/台/g, '臺');
+                    const rawUniv = univ.toLowerCase();
+
+                    if (normUniv.includes(targetPattern)) return true;
+                    if (normUniv.includes(normKw)) return true;
+                    if (rawUniv.includes(rawKw)) return true;
+
+                    return false;
+                }).slice(0, 100);
+            },
+
+            // 取得過濾後的科系列表 (支援 臺/台 互通與系所模糊匹配)
+            filteredDepts() {
+                if (!this.deptSearch) return this.availableDepts.slice(0, 100);
+
+                const rawKw = this.deptSearch.trim().toLowerCase();
+                const normKw = rawKw.replace(/台/g, '臺');
+
+                return this.availableDepts.filter(dept => {
+                    const normDept = dept.toLowerCase().replace(/台/g, '臺');
+                    const rawDept = dept.toLowerCase();
+
+                    if (normDept.includes(normKw)) return true;
+                    if (rawDept.includes(rawKw)) return true;
+
+                    // 簡稱相容 (例如 "資工" -> "資訊工程", "電機" -> "電機工程", "醫學" -> "醫學系")
+                    if (rawKw === '資工' && normDept.includes('資訊工程')) return true;
+                    if (rawKw === '電機' && normDept.includes('電機工程')) return true;
+                    if (rawKw === '醫學' && normDept.includes('醫學')) return true;
+                    if (rawKw === '牙醫' && normDept.includes('牙醫')) return true;
+                    if (rawKw === '中醫' && normDept.includes('中醫')) return true;
+
+                    return false;
+                }).slice(0, 100);
+            },
+
+            // 切換高中選取狀態
+            toggleSchool(school) {
+                const idx = this.selectedSchools.indexOf(school);
+                if (idx > -1) {
+                    this.selectedSchools.splice(idx, 1);
+                } else {
+                    this.selectedSchools.push(school);
+                }
+                this.schoolSearch = '';
+            },
+
+            // 移除單一高中標籤
+            removeSchool(school) {
+                const idx = this.selectedSchools.indexOf(school);
+                if (idx > -1) {
+                    this.selectedSchools.splice(idx, 1);
+                }
+            },
+
+            // 切換大學選取狀態並動態更新科系列表
+            async toggleUniv(univ) {
+                const idx = this.selectedUnivs.indexOf(univ);
+                if (idx > -1) {
+                    this.selectedUnivs.splice(idx, 1);
+                } else {
+                    this.selectedUnivs.push(univ);
+                }
+                this.univSearch = '';
+                await this.refreshDepartments();
+            },
+
+            // 移除單一大學標籤並動態更新科系列表
+            async removeUniv(univ) {
+                const idx = this.selectedUnivs.indexOf(univ);
+                if (idx > -1) {
+                    this.selectedUnivs.splice(idx, 1);
+                    await this.refreshDepartments();
+                }
+            },
+
+            // 切換科系選取狀態
+            toggleDept(dept) {
+                const idx = this.selectedDepts.indexOf(dept);
+                if (idx > -1) {
+                    this.selectedDepts.splice(idx, 1);
+                } else {
+                    this.selectedDepts.push(dept);
+                }
+                this.deptSearch = '';
+            },
+
+            // 移除單一科系標籤
+            removeDept(dept) {
+                const idx = this.selectedDepts.indexOf(dept);
+                if (idx > -1) {
+                    this.selectedDepts.splice(idx, 1);
+                }
+            },
+
+            // 向後端 API 請求指定大學所屬之科系列表
+            async refreshDepartments() {
+                try {
+                    const params = new URLSearchParams();
+                    if (this.selectedUnivs.length > 0) {
+                        params.set('univs', this.selectedUnivs.join(','));
+                    }
+                    const res = await fetch('/api/departments-by-univs?' + params.toString());
+                    if (res.ok) {
+                        this.availableDepts = await res.json();
+                        // 自動清除已選但不在新大學科系列表中的項目
+                        this.selectedDepts = this.selectedDepts.filter(d => this.availableDepts.includes(d));
+                    }
+                } catch (err) {
+                    console.error("更新科系列表失敗:", err);
+                }
+            },
+
+            // 發送 HTMX 請求更新局部內容
+            triggerHTMX() {
+                const params = new URLSearchParams();
+                if (this.selectedSchools.length > 0) {
+                    params.set('schools', this.selectedSchools.join(','));
+                }
+                if (this.selectedUnivs.length > 0) {
+                    params.set('univs', this.selectedUnivs.join(','));
+                }
+                if (this.selectedDepts.length > 0) {
+                    params.set('depts', this.selectedDepts.join(','));
+                }
+                params.set('year', this.selectedYear);
+
+                htmx.ajax('GET', '/?' + params.toString(), {
+                    target: '#highschool-content',
+                    swap: 'outerHTML'
+                });
+            }
+        };
+    }
+</script>
+{{end}}

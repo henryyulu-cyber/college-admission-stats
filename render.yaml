@@ -1,0 +1,16 @@
+services:
+  # 定義 Web 服務名稱與類型
+  - type: web
+    name: college-admission-stats
+    env: docker
+    plan: free
+    region: singapore
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        value: 8063
+      - key: DB_PATH
+        value: data/admission.db
+      - key: DATA_DIR
+        value: data
