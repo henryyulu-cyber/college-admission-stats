@@ -66,19 +66,19 @@ type DropdownOptions struct {
 func (s *AdmissionService) GetDropdownOptions(ctx context.Context) (*DropdownOptions, error) {
 	// 1. 優先嘗試由記憶體讀取快取 (讀鎖)
 	s.mu.RLock()
-	if s.cachedOptions != nil && time.Since(s.cachedOptionsTime) < 30*time.Minute {
+	if s.cachedOptions != nil && len(s.cachedOptions.HighSchools) > 0 && time.Since(s.cachedOptionsTime) < 30*time.Minute {
 		opts := s.cachedOptions
 		s.mu.RUnlock()
 		return opts, nil
 	}
 	s.mu.RUnlock()
 
-	// 2. 若快取不存在或已逾期，升級為寫鎖並進行資料庫查詢
+	// 2. 若快取不存在、內容為空或已逾期，升級為寫鎖並進行資料庫查詢
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	// 雙重檢查鎖定模式 (Double-Checked Locking)
-	if s.cachedOptions != nil && time.Since(s.cachedOptionsTime) < 30*time.Minute {
+	if s.cachedOptions != nil && len(s.cachedOptions.HighSchools) > 0 && time.Since(s.cachedOptionsTime) < 30*time.Minute {
 		return s.cachedOptions, nil
 	}
 

@@ -178,6 +178,16 @@ func (h *AdmissionHandler) HandleHighSchool(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "查詢多維度篩選明細清單失敗: "+err.Error())
 	}
 
+	// 增加指標物件空值防禦保護，避免模板渲染時發生空指標存取
+	if summary == nil {
+		summary = &models.HighSchoolSummary{}
+	}
+	if filteredResult == nil {
+		filteredResult = &models.FilteredAdmissionsResult{
+			Records: []models.AdmissionRecord{},
+		}
+	}
+
 	data := HighSchoolViewData{
 		ActiveTab:            "highschool",
 		IsComparisonMode:     isComparisonMode,

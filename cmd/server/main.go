@@ -56,11 +56,19 @@ func main() {
 	// 3. 初始化數據下載與 ETL 清洗管線
 	downloader := collector.NewDownloader(db, cfg.DataDir)
 
-	// 4. 檢查目前資料庫筆數；若為空庫則自動執行 110~115 學年度全量預載入庫
+	// 4. 檢查目前資料庫筆數；若為空庫則立即同步執行 110~115 學年度全量預載入庫
 	status, err := downloader.GetStatus()
 	if err == nil && status.TotalRecords == 0 {
-		log.Printf("[資訊] 檢測到資料庫為空，自動觸發 110~115 學年度升學資料初始化...")
-		_ = downloader.SyncAllYears()
+		log.Printf("[資訊] 檢測到資料庫為空，正在同步初始化 110~115 學年度全台升學大數據...")
+		for _, yr := range []int{110, 111, 112, 113, 114, 115} {
+			count, students, pErr := downloader.ProcessYearDirect(yr)
+			if pErr != nil {
+				log.Printf("[錯誤] 初始化 %d 學年度失敗: %v", yr, pErr)
+			} else {
+				log.Printf("[資訊] %d 學年度初始化完成 (%d 筆記錄, %d 人)", yr, count, students)
+			}
+		}
+		log.Printf("[成功] 全學年度資料庫初始化完成！")
 	}
 
 	// 5. 初始化業務邏輯與報表匯出服務層
