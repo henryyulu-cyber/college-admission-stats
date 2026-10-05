@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <!-- 設定網頁語系為繁體中文 -->
-<html lang="zh-TW" class="dark">
+<html lang="zh-TW" class="dark" x-data="{ darkMode: true }" x-init="darkMode = localStorage.theme === 'dark' || (!('theme' in localStorage)); if(darkMode){ document.documentElement.classList.add('dark') } else { document.documentElement.classList.remove('dark') }">
 <head>
     <!-- 設定字符編碼為 UTF-8 -->
     <meta charset="UTF-8">
     <!-- 設置響應式視區以支援行動端與桌機瀏覽 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 立即執行腳本防止深淺色模式切換時白屏閃爍 (Flash of Unstyled Theme) -->
+    <script>
+        // 檢查 localStorage 或預設偏好設定
+        if (localStorage.theme === 'light') {
+            // 若設定為淺色模式，移除 html 的 dark class
+            document.documentElement.classList.remove('dark');
+        } else {
+            // 預設採用學生查榜專注沉浸之莫蘭迪深色模式
+            document.documentElement.classList.add('dark');
+        }
+    </script>
     <!-- 網頁標題 -->
     <title>全台大學升學統計與篩選系統 (110~115學年度)</title>
     <!-- 引入 Tailwind CSS CDN，提供現代化美觀 UI 樣式 -->
@@ -16,47 +27,72 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- 引入 Alpine.js 輕量前端狀態管理庫，支援多選晶片標籤與級聯下拉互動 -->
     <script defer src="https://unpkg.com/alpinejs@3.13.10/dist/cdn.min.js"></script>
-    <!-- 配置 Tailwind 暗黑模式色彩主題 -->
+    <!-- 配置 Tailwind 莫蘭迪色系主題與暗黑模式擴充 -->
     <script>
         tailwind.config = {
+            // 啟用 class 模式控制深淺主題
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
-                            900: '#0c4a6e',
+                        // 莫蘭迪淺色系核心色彩 (低彩度、溫和雅致)
+                        morandi: {
+                            bg: '#f5f6f8',        // 60% 主背景：燕麥淺灰
+                            card: '#ffffff',      // 30% 卡片：純淨溫和白
+                            subcard: '#f0f3f6',   // 次級卡片背景：極淺冷灰
+                            border: '#dbe1e8',    // 線條邊框：莫蘭迪淡灰
+                            text: '#2d3748',      // 主要文字：深炭灰 (WCAG 7:1)
+                            muted: '#5e6d82',     // 次要文字：石板灰
+                            blue: '#4f728c',      // 10% 主題強調整色：莫蘭迪霧霾藍
+                            green: '#538373',     // 正常/國立：莫蘭迪鼠尾草綠
+                            amber: '#c27d52',     // 注意/私立：莫蘭迪焦糖杏
+                            rose: '#ab5c5c',      // 重點/醫牙：莫蘭迪乾枯玫瑰
+                            purple: '#7a6a91',    // 綜合/多元：莫蘭迪煙燻薰衣草
                         },
-                        darkbg: '#0f172a',
-                        darkcard: '#1e293b',
-                        darkborder: '#334155',
+                        // 莫蘭迪深色系核心色彩 (學生查榜專用低對比、沉穩不刺眼)
+                        morandidark: {
+                            bg: '#13161c',        // 60% 主背景：沉靜深岩灰
+                            card: '#1e232d',      // 30% 卡片：霧霾暗藍灰
+                            subcard: '#252c38',   // 次級卡片背景：層次深灰
+                            border: '#2e3746',    // 線條邊框：暗調鋼灰
+                            text: '#e2e8f0',      // 主要文字：柔和冷白 (WCAG 8:1)
+                            muted: '#94a3b8',     // 次要文字：莫蘭迪灰藍字
+                            blue: '#688fa8',      // 10% 主題強調色：柔和霧霾藍
+                            green: '#6da38e',     // 正常/國立：柔和鼠尾草綠
+                            amber: '#d09168',     // 注意/私立：柔和杏橘
+                            rose: '#c47373',      // 重點/醫牙：柔和玫瑰紅
+                            purple: '#9986b0',    // 綜合/多元：柔和薰衣草
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* 滾動條美化樣式 */
+        /* 滾動條美化樣式 (淺色模式) */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-track { background: #f0f3f6; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        /* 滾動條美化樣式 (深色模式) */
+        .dark ::-webkit-scrollbar-track { background: #13161c; }
+        .dark ::-webkit-scrollbar-thumb { background: #2e3746; }
+        .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        /* 隱藏滾動條輔助樣式 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Alpine 初始加載防抖樣式 */
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-[#f5f6f8] text-[#2d3748] dark:bg-[#13161c] dark:text-[#e2e8f0] min-h-screen flex flex-col font-sans antialiased transition-colors duration-200">
     <!-- 頂部全站導覽列 -->
-    <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-50">
+    <header class="border-b border-slate-200/90 dark:border-[#2e3746] bg-white/90 dark:bg-[#181c24]/90 backdrop-blur sticky top-0 z-50 transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- 品牌 Logo 與系統標題 -->
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                <!-- 莫蘭迪質感漸層徽章 -->
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#4f728c] to-[#7a6a91] dark:from-[#688fa8] dark:to-[#9986b0] flex items-center justify-center shadow-md">
                     <!-- 圖書/學位帽圖標 -->
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
@@ -64,62 +100,86 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                    <h1 class="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-2">
                         大學升學統計與篩選中心
-                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">110 ~ 115 學年度</span>
+                        <span class="text-[11px] font-normal px-2 py-0.5 rounded-full bg-[#4f728c]/10 text-[#4f728c] border border-[#4f728c]/20 dark:bg-[#688fa8]/15 dark:text-[#88b0cc] dark:border-[#688fa8]/30">110 ~ 115 學年度</span>
                     </h1>
-                    <p class="text-xs text-slate-400">教育部開放資料與全台高中升學流向交叉分析系統</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">教育部開放資料與全台高中升學流向交叉分析系統</p>
                 </div>
             </div>
 
-            <!-- 桌機功能分頁導覽列 -->
-            <nav class="hidden lg:flex items-center space-x-1">
-                <a href="/" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    🏫 高中升學流向
-                </a>
-                <a href="/medical" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    🏥 醫牙中專區
-                </a>
-                <a href="/disciplines" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    📊 學群系所分析
-                </a>
-                <a href="/university" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "university"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    🎓 大學生源分析
-                </a>
-                <a href="/group" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "group"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    📈 18學群趨勢
-                </a>
-                <a href="/explore" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    🔍 明細即時檢索
-                </a>
-                <a href="/sync" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
-                    🔄 數據同步中心
-                </a>
-            </nav>
+            <!-- 右側操作區：桌機導覽分頁 + 深淺模式切換開關 -->
+            <div class="flex items-center space-x-3">
+                <!-- 桌機功能分頁導覽列 -->
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <a href="/" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-[#4f728c]/15 text-[#35546e] border border-[#4f728c]/30 dark:bg-[#688fa8]/20 dark:text-[#9ac5e3] dark:border-[#688fa8]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        🏫 高中升學流向
+                    </a>
+                    <a href="/medical" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-[#ab5c5c]/15 text-[#883d3d] border border-[#ab5c5c]/30 dark:bg-[#c47373]/20 dark:text-[#e89d9d] dark:border-[#c47373]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        🏥 醫牙中專區
+                    </a>
+                    <a href="/disciplines" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-[#538373]/15 text-[#376152] border border-[#538373]/30 dark:bg-[#6da38e]/20 dark:text-[#9bd0bc] dark:border-[#6da38e]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        📊 學群系所分析
+                    </a>
+                    <a href="/university" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "university"}}bg-[#4f728c]/15 text-[#35546e] border border-[#4f728c]/30 dark:bg-[#688fa8]/20 dark:text-[#9ac5e3] dark:border-[#688fa8]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        🎓 大學生源分析
+                    </a>
+                    <a href="/group" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "group"}}bg-[#7a6a91]/15 text-[#59496e] border border-[#7a6a91]/30 dark:bg-[#9986b0]/20 dark:text-[#cbbce0] dark:border-[#9986b0]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        📈 18學群趨勢
+                    </a>
+                    <a href="/explore" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-[#4f728c]/15 text-[#35546e] border border-[#4f728c]/30 dark:bg-[#688fa8]/20 dark:text-[#9ac5e3] dark:border-[#688fa8]/40 font-semibold{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        🔍 明細即時檢索
+                    </a>
+                    <a href="/sync" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-200{{else}}text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#252c38] hover:text-slate-900 dark:hover:text-white{{end}}">
+                        🔄 同步
+                    </a>
+                </nav>
+
+                <!-- 莫蘭迪深淺模式即時切換開關 (Theme Mode Toggle) -->
+                <button type="button" 
+                        @click="darkMode = !darkMode; if(darkMode){ document.documentElement.classList.add('dark'); localStorage.theme = 'dark'; } else { document.documentElement.classList.remove('dark'); localStorage.theme = 'light'; }"
+                        class="p-2 rounded-xl bg-slate-100 dark:bg-[#252c38] hover:bg-slate-200 dark:hover:bg-[#2e3746] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#2e3746] transition-all flex items-center gap-1.5 text-xs font-medium"
+                        :title="darkMode ? '切換為莫蘭迪淺色模式' : '切換為學生查榜深色模式'">
+                    <!-- 深色模式顯示月亮圖標 -->
+                    <template x-if="darkMode">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-[#88b0cc]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                            <span class="hidden sm:inline text-xs text-slate-300">查榜深色</span>
+                        </span>
+                    </template>
+                    <!-- 淺色模式顯示太陽圖標 -->
+                    <template x-if="!darkMode">
+                        <span class="flex items-center gap-1.5">
+                            <svg class="w-4 h-4 text-[#c27d52]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            <span class="hidden sm:inline text-xs text-slate-700">莫蘭迪淺色</span>
+                        </span>
+                    </template>
+                </button>
+            </div>
         </div>
 
         <!-- 手機端專屬：可橫向滑動之分頁導覽列 (Mobile Scrollable Nav) -->
-        <div class="lg:hidden border-t border-slate-800/80 bg-slate-900/95 overflow-x-auto py-2 px-4 flex items-center space-x-2 no-scrollbar">
-            <a href="/" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+        <div class="lg:hidden border-t border-slate-200/80 dark:border-[#2e3746] bg-slate-50/95 dark:bg-[#181c24]/95 overflow-x-auto py-2 px-4 flex items-center space-x-2 no-scrollbar">
+            <a href="/" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-[#4f728c]/20 text-[#35546e] dark:bg-[#688fa8]/25 dark:text-[#9ac5e3] border border-[#4f728c]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
                 🏫 高中升學
             </a>
-            <a href="/medical" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
-                🏥 醫牙中專區
+            <a href="/medical" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-[#ab5c5c]/20 text-[#883d3d] dark:bg-[#c47373]/25 dark:text-[#e89d9d] border border-[#ab5c5c]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
+                🏥 醫牙中
             </a>
-            <a href="/disciplines" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+            <a href="/disciplines" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-[#538373]/20 text-[#376152] dark:bg-[#6da38e]/25 dark:text-[#9bd0bc] border border-[#538373]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
                 📊 學群系所
             </a>
-            <a href="/university" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "university"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+            <a href="/university" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "university"}}bg-[#4f728c]/20 text-[#35546e] dark:bg-[#688fa8]/25 dark:text-[#9ac5e3] border border-[#4f728c]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
                 🎓 大學生源
             </a>
-            <a href="/group" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "group"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+            <a href="/group" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "group"}}bg-[#7a6a91]/20 text-[#59496e] dark:bg-[#9986b0]/25 dark:text-[#cbbce0] border border-[#7a6a91]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
                 📈 18學群
             </a>
-            <a href="/explore" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+            <a href="/explore" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-[#4f728c]/20 text-[#35546e] dark:bg-[#688fa8]/25 dark:text-[#9ac5e3] border border-[#4f728c]/30 font-semibold{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
                 🔍 明細檢索
             </a>
-            <a href="/sync" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
-                🔄 數據同步
+            <a href="/sync" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200{{else}}text-slate-600 dark:text-slate-300 bg-white dark:bg-[#252c38] border border-slate-200 dark:border-[#2e3746]{{end}}">
+                🔄 同步
             </a>
         </div>
     </header>
@@ -130,10 +190,10 @@
     </main>
 
     <!-- 底部頁尾 -->
-    <footer class="border-t border-slate-800/80 bg-slate-900/50 py-4 mt-auto text-center text-xs text-slate-500">
+    <footer class="border-t border-slate-200/90 dark:border-[#2e3746] bg-white/70 dark:bg-[#181c24]/70 py-4 mt-auto text-center text-xs text-slate-500 dark:text-slate-400 transition-colors duration-200">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <span>全台大專校院與高中升學大數據分析平台 &copy; 110-115 學年度</span>
-            <span class="text-slate-600">依據 Go + Echo + HTMX 極簡架構與現代 UI 規範實作</span>
+            <span class="text-slate-400 dark:text-slate-500">依據 Go + Echo + HTMX 極簡架構與莫蘭迪 UI 規範實作</span>
         </div>
     </footer>
 </body>

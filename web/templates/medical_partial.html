@@ -1,99 +1,99 @@
 <!-- 局部置換容器：包含 KPI 指標、動態圖表與數據明細 -->
 <div id="medical-content" class="space-y-6">
-    <!-- 4 大核心醫牙中 KPI 指標卡片 -->
+    <!-- 4 大核心醫牙中 KPI 指標卡片 (莫蘭迪色盤) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- 醫牙中總錄取人數卡片 -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <!-- 醫牙中總錄取人數卡片 (莫蘭迪乾枯玫瑰粉) -->
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">醫牙中總錄取人數</span>
-                <span class="p-2 bg-rose-500/10 text-rose-400 rounded-lg">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">醫牙中總錄取人數</span>
+                <span class="p-2 bg-[#ab5c5c]/10 text-[#ab5c5c] dark:text-[#db8888] rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 </span>
             </div>
             <div class="mt-3 flex items-baseline">
-                <span class="text-3xl font-extrabold text-rose-400">{{.Summary.TotalMedDentStudents}}</span>
-                <span class="ml-2 text-xs text-slate-400">人次</span>
+                <span class="text-3xl font-extrabold text-[#ab5c5c] dark:text-[#db8888]">{{.Summary.TotalMedDentStudents}}</span>
+                <span class="ml-2 text-xs text-slate-500">人次</span>
             </div>
-            <div class="mt-2 text-xs text-slate-500">
+            <div class="mt-2 text-xs text-slate-400 dark:text-slate-500">
                 醫學系、牙醫學系與中醫學系學生總數
             </div>
         </div>
 
-        <!-- 醫學系 vs 牙醫系 vs 中醫系人數分佈卡片 -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <!-- 醫學系 vs 牙醫系 vs 中醫系人數分佈卡片 (霧霾藍 / 鼠尾草綠 / 焦糖杏) -->
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">科系分佈 (醫 / 牙 / 中)</span>
-                <span class="p-2 bg-sky-500/10 text-sky-400 rounded-lg">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">科系分佈 (醫 / 牙 / 中)</span>
+                <span class="p-2 bg-[#4f728c]/10 text-[#4f728c] dark:text-[#88b0cc] rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </span>
             </div>
             <div class="mt-3 flex items-baseline gap-2">
                 <div>
-                    <span class="text-lg font-bold text-sky-400">{{.Summary.MedStudents}}</span>
+                    <span class="text-lg font-bold text-[#4f728c] dark:text-[#88b0cc]">{{.Summary.MedStudents}}</span>
                     <span class="text-[10px] text-slate-400 ml-0.5">醫</span>
                 </div>
-                <span class="text-slate-600">/</span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
                 <div>
-                    <span class="text-lg font-bold text-emerald-400">{{.Summary.DentStudents}}</span>
+                    <span class="text-lg font-bold text-[#538373] dark:text-[#8ac2ae]">{{.Summary.DentStudents}}</span>
                     <span class="text-[10px] text-slate-400 ml-0.5">牙</span>
                 </div>
-                <span class="text-slate-600">/</span>
+                <span class="text-slate-300 dark:text-slate-600">/</span>
                 <div>
-                    <span class="text-lg font-bold text-amber-400">{{.Summary.ChineseMedStudents}}</span>
+                    <span class="text-lg font-bold text-[#c27d52] dark:text-[#e0a47d]">{{.Summary.ChineseMedStudents}}</span>
                     <span class="text-[10px] text-slate-400 ml-0.5">中醫</span>
                 </div>
             </div>
-            <div class="mt-2 text-xs text-slate-500">
+            <div class="mt-2 text-xs text-slate-400 dark:text-slate-500">
                 三大醫療學系實錄人數結構
             </div>
         </div>
 
-        <!-- 國立大學醫牙中率卡片 -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <!-- 國立大學醫牙中率卡片 (莫蘭迪鼠尾草綠) -->
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">國立醫牙中錄取率</span>
-                <span class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">國立醫牙中錄取率</span>
+                <span class="p-2 bg-[#538373]/10 text-[#538373] dark:text-[#8ac2ae] rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 </span>
             </div>
             <div class="mt-3 flex items-baseline">
-                <span class="text-3xl font-extrabold text-emerald-400">{{.Summary.NationalRate}}</span>
-                <span class="ml-2 text-xs text-slate-400">({{.Summary.NationalMedStudents}} 人)</span>
+                <span class="text-3xl font-extrabold text-[#538373] dark:text-[#8ac2ae]">{{.Summary.NationalRate}}</span>
+                <span class="ml-2 text-xs text-slate-500">({{.Summary.NationalMedStudents}} 人)</span>
             </div>
-            <div class="mt-2 text-xs text-slate-500">
-                台大、陽明交大、成大、中興等國立院校
+            <div class="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                臺大、陽明交大、成大、中興等國立院校
             </div>
         </div>
 
-        <!-- 私立醫學大學人數卡片 -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm">
+        <!-- 私立醫學大學人數卡片 (莫蘭迪薰衣草紫) -->
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-5 shadow-sm">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">私立醫大錄取</span>
-                <span class="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg">
+                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">私立醫大錄取</span>
+                <span class="p-2 bg-[#7a6a91]/10 text-[#7a6a91] dark:text-[#bcaed1] rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 </span>
             </div>
             <div class="mt-3 flex items-baseline">
-                <span class="text-3xl font-extrabold text-indigo-400">{{.Summary.PrivateMedStudents}}</span>
-                <span class="ml-2 text-xs text-slate-400">人</span>
+                <span class="text-3xl font-extrabold text-[#7a6a91] dark:text-[#bcaed1]">{{.Summary.PrivateMedStudents}}</span>
+                <span class="ml-2 text-xs text-slate-500">人</span>
             </div>
-            <div class="mt-2 text-xs text-slate-500">
+            <div class="mt-2 text-xs text-slate-400 dark:text-slate-500">
                 北醫、長庚、高醫、中國醫、中山醫等
             </div>
         </div>
     </div>
 
-    <!-- 動態圖表展示區 (雙圖並列：三色堆疊直方圖 + 大餅圖) -->
+    <!-- 動態圖表展示區 (雙圖並列：莫蘭迪直方圖 + 圓環圖) -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <!-- 左側直方圖：Top 20 高中排行 (佔 7 欄) -->
-        <div class="lg:col-span-7 bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+        <div class="lg:col-span-7 bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         <span>📊 {{if eq .SelectedMode "hs_rank"}}全台高中醫牙中錄取人數 Top 20 排行{{else}}{{.SelectedUniv}} 醫牙中生源高中 Top 15{{end}}</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">
-                        {{if eq .SelectedMode "hs_rank"}}藍色為醫學系，綠色為牙醫學系，橘色為中醫學系{{else}}長條代表該高中錄取至 {{.SelectedUniv}} 醫牙中學生人數{{end}}
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {{if eq .SelectedMode "hs_rank"}}霧霾藍為醫學系，鼠尾草綠為牙醫學系，焦糖杏為中醫學系{{else}}長條代表該高中錄取至 {{.SelectedUniv}} 醫牙中學生人數{{end}}
                     </p>
                 </div>
             </div>
@@ -102,14 +102,14 @@
             </div>
         </div>
 
-        <!-- 右側動態大餅圖：大學/生源分佈 (佔 5 欄) -->
-        <div class="lg:col-span-5 bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+        <!-- 右側動態圓環圖：大學/生源分佈 (佔 5 欄) -->
+        <div class="lg:col-span-5 bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         <span>🍩 {{if eq .SelectedMode "hs_rank"}}各大學醫牙中錄取名額分佈比例{{else}}生源高中公私立佔比分佈{{end}}</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">滑鼠懸浮可查看精確錄取人數與百分比</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">滑鼠懸浮可查看精確錄取人數與百分比</p>
                 </div>
             </div>
             <div class="relative w-full h-[380px] flex items-center justify-center">
@@ -119,96 +119,96 @@
     </div>
 
     <!-- 下方數據明細表格區 -->
-    <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-800">
+    <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-100 dark:border-[#2e3746]">
             <div>
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <span>📋 {{if eq .SelectedMode "hs_rank"}}全台高中醫牙中錄取明細排行榜 (Top 20){{else}}{{.SelectedUniv}} 醫牙中生源高中清單{{end}}</span>
                 </h3>
-                <p class="text-xs text-slate-400 mt-0.5">完整呈現高中公私立別、縣市與醫/牙/中各科系實錄人數</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">完整呈現高中公私立別、縣市與醫/牙/中各科系實錄人數</p>
             </div>
         </div>
 
         {{if eq .SelectedMode "hs_rank"}}
         <!-- 高中醫牙中排行表格 -->
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-300">
-                <thead class="text-xs uppercase bg-slate-950/60 text-slate-400 border-b border-slate-800">
+            <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+                <thead class="text-xs uppercase bg-slate-50 dark:bg-[#13161c] text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-[#2e3746]">
                     <tr>
                         <th class="px-4 py-3 rounded-l-lg text-center w-16">名次</th>
                         <th class="px-4 py-3">高中學校名稱</th>
                         <th class="px-4 py-3 text-center">縣市</th>
                         <th class="px-4 py-3 text-center">性質</th>
-                        <th class="px-4 py-3 text-right text-sky-400">醫學系</th>
-                        <th class="px-4 py-3 text-right text-emerald-400">牙醫學系</th>
-                        <th class="px-4 py-3 text-right text-amber-400">中醫學系</th>
-                        <th class="px-4 py-3 text-right font-bold text-rose-400">醫牙中總計</th>
+                        <th class="px-4 py-3 text-right text-[#4f728c] dark:text-[#88b0cc]">醫學系</th>
+                        <th class="px-4 py-3 text-right text-[#538373] dark:text-[#8ac2ae]">牙醫學系</th>
+                        <th class="px-4 py-3 text-right text-[#c27d52] dark:text-[#e0a47d]">中醫學系</th>
+                        <th class="px-4 py-3 text-right font-bold text-[#ab5c5c] dark:text-[#db8888]">醫牙中總計</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60">
+                <tbody class="divide-y divide-slate-100 dark:divide-[#2e3746]/60">
                     {{range .HighSchoolRank}}
-                    <tr class="hover:bg-slate-800/40 transition-colors">
+                    <tr class="hover:bg-slate-50 dark:hover:bg-[#252c38] transition-colors">
                         <td class="px-4 py-3 text-center">
-                            {{if eq .Rank 1}}<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 font-extrabold text-xs">🥇</span>
-                            {{else if eq .Rank 2}}<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-300/20 text-slate-200 font-extrabold text-xs">🥈</span>
-                            {{else if eq .Rank 3}}<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-700/20 text-amber-500 font-extrabold text-xs">🥉</span>
-                            {{else}}<span class="text-xs text-slate-400 font-mono">{{.Rank}}</span>{{end}}
+                            {{if le .Rank 3}}
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full {{if eq .Rank 1}}bg-[#c27d52]/20 text-[#734323] border border-[#c27d52]/40 dark:text-[#e8b695]{{else if eq .Rank 2}}bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200{{else}}bg-[#7a6a91]/20 text-[#59496e] border border-[#7a6a91]/40 dark:text-[#cbbce0]{{end}} font-bold text-xs">
+                                {{.Rank}}
+                            </span>
+                            {{else}}
+                            <span class="text-slate-400 font-medium text-xs">{{.Rank}}</span>
+                            {{end}}
                         </td>
-                        <td class="px-4 py-3 font-medium text-white flex items-center gap-2">
-                            <a href="/?school={{.HighSchoolName}}" class="hover:text-sky-400 transition-colors underline decoration-slate-600 underline-offset-4">{{.HighSchoolName}}</a>
-                        </td>
-                        <td class="px-4 py-3 text-center text-xs text-slate-400">{{.City}}</td>
+                        <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">{{.HighSchoolName}}</td>
+                        <td class="px-4 py-3 text-center text-xs text-slate-500 dark:text-slate-400">{{.City}}</td>
                         <td class="px-4 py-3 text-center">
-                            <span class="px-2 py-0.5 rounded text-[11px] {{if eq .SchoolType "公立"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}bg-purple-500/10 text-purple-400 border border-purple-500/20{{end}}">
+                            <span class="px-2 py-0.5 rounded text-[11px] {{if eq .SchoolType "公立"}}bg-[#538373]/10 text-[#538373] border border-[#538373]/20 dark:bg-[#6da38e]/20 dark:text-[#9bd0bc]{{else}}bg-[#c27d52]/10 text-[#c27d52] border border-[#c27d52]/20 dark:bg-[#d09168]/20 dark:text-[#e8b695]{{end}}">
                                 {{.SchoolType}}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-right font-semibold text-sky-400">{{.MedCount}}</td>
-                        <td class="px-4 py-3 text-right font-semibold text-emerald-400">{{.DentCount}}</td>
-                        <td class="px-4 py-3 text-right font-semibold text-amber-400">{{.ChineseMedCount}}</td>
-                        <td class="px-4 py-3 text-right font-extrabold text-rose-400 text-base">{{.TotalCount}}</td>
+                        <td class="px-4 py-3 text-right font-medium text-[#4f728c] dark:text-[#88b0cc]">{{.MedCount}} 人</td>
+                        <td class="px-4 py-3 text-right font-medium text-[#538373] dark:text-[#8ac2ae]">{{.DentCount}} 人</td>
+                        <td class="px-4 py-3 text-right font-medium text-[#c27d52] dark:text-[#e0a47d]">{{.ChineseMedCount}} 人</td>
+                        <td class="px-4 py-3 text-right font-extrabold text-[#ab5c5c] dark:text-[#db8888]">{{.TotalCount}} 人</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="8" class="text-center py-10 text-slate-500">無符合條件之醫牙中錄取數據</td>
+                        <td colspan="8" class="text-center py-10 text-slate-400">暫無醫牙中排行數據</td>
                     </tr>
                     {{end}}
                 </tbody>
             </table>
         </div>
+
         {{else}}
-        <!-- 大學醫牙中生源表格 -->
+        <!-- 大學醫牙中生源清單表格 -->
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-300">
-                <thead class="text-xs uppercase bg-slate-950/60 text-slate-400 border-b border-slate-800">
+            <table class="w-full text-left text-sm text-slate-700 dark:text-slate-300">
+                <thead class="text-xs uppercase bg-slate-50 dark:bg-[#13161c] text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-[#2e3746]">
                     <tr>
-                        <th class="px-4 py-3 rounded-l-lg text-center w-16">序號</th>
-                        <th class="px-4 py-3">來源高中名稱</th>
-                        <th class="px-4 py-3 text-center">所在縣市</th>
-                        <th class="px-4 py-3 text-center">高中性質</th>
-                        <th class="px-4 py-3 text-right text-rose-400 font-bold">錄取人數</th>
-                        <th class="px-4 py-3 text-right rounded-r-lg">佔比</th>
+                        <th class="px-4 py-3 rounded-l-lg text-center w-16">排行</th>
+                        <th class="px-4 py-3">生源高中名稱</th>
+                        <th class="px-4 py-3 text-center">縣市</th>
+                        <th class="px-4 py-3 text-center">性質</th>
+                        <th class="px-4 py-3 text-right font-bold text-[#ab5c5c] dark:text-[#db8888]">錄取人數</th>
+                        <th class="px-4 py-3 text-right text-slate-600 dark:text-slate-300">佔該校系比例</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60">
+                <tbody class="divide-y divide-slate-100 dark:divide-[#2e3746]/60">
                     {{range $idx, $item := .UnivSources}}
-                    <tr class="hover:bg-slate-800/40 transition-colors">
-                        <td class="px-4 py-3 text-center text-xs text-slate-400 font-mono">{{add $idx 1}}</td>
-                        <td class="px-4 py-3 font-medium text-white">
-                            <a href="/?school={{$item.HighSchoolName}}" class="hover:text-sky-400 transition-colors underline decoration-slate-600 underline-offset-4">{{$item.HighSchoolName}}</a>
-                        </td>
-                        <td class="px-4 py-3 text-center text-xs text-slate-400">{{$item.City}}</td>
+                    <tr class="hover:bg-slate-50 dark:hover:bg-[#252c38] transition-colors">
+                        <td class="px-4 py-3 text-center text-xs font-semibold text-slate-400">{{add $idx 1}}</td>
+                        <td class="px-4 py-3 font-semibold text-slate-800 dark:text-slate-100">{{$item.HighSchoolName}}</td>
+                        <td class="px-4 py-3 text-center text-xs text-slate-500 dark:text-slate-400">{{$item.City}}</td>
                         <td class="px-4 py-3 text-center">
-                            <span class="px-2 py-0.5 rounded text-[11px] {{if eq $item.SchoolType "公立"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}bg-purple-500/10 text-purple-400 border border-purple-500/20{{end}}">
+                            <span class="px-2 py-0.5 rounded text-[11px] {{if eq $item.SchoolType "公立"}}bg-[#538373]/10 text-[#538373] border border-[#538373]/20 dark:bg-[#6da38e]/20 dark:text-[#9bd0bc]{{else}}bg-[#7a6a91]/10 text-[#7a6a91] border border-[#7a6a91]/20 dark:bg-[#9986b0]/20 dark:text-[#cbbce0]{{end}}">
                                 {{$item.SchoolType}}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-right font-extrabold text-rose-400">{{$item.StudentCount}} 人</td>
-                        <td class="px-4 py-3 text-right font-medium text-slate-300">{{$item.Percentage}}%</td>
+                        <td class="px-4 py-3 text-right font-extrabold text-[#ab5c5c] dark:text-[#db8888]">{{$item.StudentCount}} 人</td>
+                        <td class="px-4 py-3 text-right font-medium text-slate-600 dark:text-slate-300">{{$item.Percentage}}%</td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="6" class="text-center py-10 text-slate-500">該大學校系暫無生源數據</td>
+                        <td colspan="6" class="text-center py-10 text-slate-400">該大學校系暫無生源數據</td>
                     </tr>
                     {{end}}
                 </tbody>
@@ -218,7 +218,7 @@
     </div>
 </div>
 
-<!-- 注入前端圖表繪製 JavaScript 數據與邏輯 -->
+<!-- 注入前端圖表繪製 JavaScript 數據與邏輯 (莫蘭迪色盤) -->
 <script>
     (function() {
         // 銷毀現有圖表物件以防重複渲染記憶體洩漏
@@ -231,9 +231,10 @@
             window.medicalPieChartInst = null;
         }
 
+        const isDark = document.documentElement.classList.contains('dark');
         const mode = "{{.SelectedMode}}";
 
-        // 1. 初始化直方圖 (支援醫學/牙醫/中醫三色堆疊)
+        // 1. 初始化直方圖 (莫蘭迪三色堆疊)
         const barCtx = document.getElementById('medicalBarChart');
         if (barCtx) {
             if (mode === "hs_rank") {
@@ -259,24 +260,24 @@
                             {
                                 label: '醫學系',
                                 data: medData,
-                                backgroundColor: 'rgba(56, 189, 248, 0.85)',
-                                borderColor: '#0284c7',
+                                backgroundColor: 'rgba(79, 114, 140, 0.85)',
+                                borderColor: 'rgb(79, 114, 140)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '牙醫學系',
                                 data: dentData,
-                                backgroundColor: 'rgba(52, 211, 153, 0.85)',
-                                borderColor: '#059669',
+                                backgroundColor: 'rgba(83, 131, 115, 0.85)',
+                                borderColor: 'rgb(83, 131, 115)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '中醫學系',
                                 data: chineseMedData,
-                                backgroundColor: 'rgba(251, 146, 60, 0.85)',
-                                borderColor: '#ea580c',
+                                backgroundColor: 'rgba(194, 125, 82, 0.85)',
+                                borderColor: 'rgb(194, 125, 82)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             }
@@ -289,9 +290,9 @@
                         scales: {
                             x: {
                                 stacked: true,
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
                                 ticks: {
-                                    color: '#94a3b8',
+                                    color: isDark ? '#94a3b8' : '#5e6d82',
                                     font: { size: 11 },
                                     maxRotation: 45,
                                     minRotation: 45,
@@ -300,19 +301,19 @@
                             y: {
                                 stacked: true,
                                 beginAtZero: true,
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                                ticks: { color: '#94a3b8', font: { size: 11 } }
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
+                                ticks: { color: isDark ? '#94a3b8' : '#5e6d82', font: { size: 11 } }
                             }
                         },
                         plugins: {
                             legend: {
-                                labels: { color: '#e2e8f0', font: { size: 12 } }
+                                labels: { color: isDark ? '#e2e8f0' : '#2d3748', font: { size: 12 } }
                             },
                             tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleColor: '#f8fafc',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: isDark ? '#1e232d' : '#ffffff',
+                                titleColor: isDark ? '#f8fafc' : '#1e293b',
+                                bodyColor: isDark ? '#cbd5e1' : '#475569',
+                                borderColor: isDark ? '#2e3746' : '#dbe1e8',
                                 borderWidth: 1,
                                 padding: 10
                             }
@@ -335,8 +336,8 @@
                         datasets: [{
                             label: '錄取人數',
                             data: countData,
-                            backgroundColor: 'rgba(244, 63, 94, 0.85)',
-                            borderColor: '#e11d48',
+                            backgroundColor: 'rgba(171, 92, 92, 0.85)',
+                            borderColor: 'rgb(171, 92, 92)',
                             borderWidth: 1,
                             borderRadius: 4,
                         }]
@@ -346,22 +347,22 @@
                         maintainAspectRatio: false,
                         scales: {
                             x: {
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                                ticks: { color: '#94a3b8', font: { size: 11 }, maxRotation: 45, minRotation: 45 }
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
+                                ticks: { color: isDark ? '#94a3b8' : '#5e6d82', font: { size: 11 }, maxRotation: 45, minRotation: 45 }
                             },
                             y: {
                                 beginAtZero: true,
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                                ticks: { color: '#94a3b8', font: { size: 11 } }
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
+                                ticks: { color: isDark ? '#94a3b8' : '#5e6d82', font: { size: 11 } }
                             }
                         },
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleColor: '#f8fafc',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: isDark ? '#1e232d' : '#ffffff',
+                                titleColor: isDark ? '#f8fafc' : '#1e293b',
+                                bodyColor: isDark ? '#cbd5e1' : '#475569',
+                                borderColor: isDark ? '#2e3746' : '#dbe1e8',
                                 borderWidth: 1,
                                 padding: 10
                             }
@@ -371,7 +372,7 @@
             }
         }
 
-        // 2. 初始化動態大餅圖 (Doughnut)
+        // 2. 初始化動態圓環圖 (莫蘭迪低飽和色系)
         const pieCtx = document.getElementById('medicalPieChart');
         if (pieCtx) {
             if (mode === "hs_rank") {
@@ -383,10 +384,10 @@
                     {{range .UnivDist}}{{.StudentCount}},{{end}}
                 ];
 
-                const colorPalette = [
-                    '#38bdf8', '#818cf8', '#c084fc', '#f472b6', '#fb7185',
-                    '#34d399', '#4ade80', '#a3e635', '#facc15', '#fb923c',
-                    '#94a3b8', '#64748b'
+                const morandiPiePalette = [
+                    '#4f728c', '#538373', '#c27d52', '#ab5c5c', '#7a6a91',
+                    '#628395', '#729b89', '#d49669', '#bc7373', '#9284a6',
+                    '#8898aa', '#a4b3c6'
                 ];
 
                 window.medicalPieChartInst = new Chart(pieCtx, {
@@ -395,8 +396,8 @@
                         labels: univLabels,
                         datasets: [{
                             data: univCounts,
-                            backgroundColor: colorPalette.slice(0, univLabels.length),
-                            borderColor: '#0f172a',
+                            backgroundColor: morandiPiePalette.slice(0, univLabels.length),
+                            borderColor: isDark ? '#1e232d' : '#ffffff',
                             borderWidth: 2,
                             hoverOffset: 8
                         }]
@@ -408,17 +409,17 @@
                             legend: {
                                 position: 'right',
                                 labels: {
-                                    color: '#cbd5e1',
+                                    color: isDark ? '#cbd5e1' : '#5e6d82',
                                     font: { size: 10 },
                                     boxWidth: 12,
                                     padding: 8
                                 }
                             },
                             tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleColor: '#f8fafc',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: isDark ? '#1e232d' : '#ffffff',
+                                titleColor: isDark ? '#f8fafc' : '#1e293b',
+                                bodyColor: isDark ? '#cbd5e1' : '#475569',
+                                borderColor: isDark ? '#2e3746' : '#dbe1e8',
                                 borderWidth: 1,
                                 padding: 10,
                                 callbacks: {
@@ -445,8 +446,8 @@
                         labels: ['公立高中', '私立高中'],
                         datasets: [{
                             data: [publicCount, privateCount],
-                            backgroundColor: ['#38bdf8', '#c084fc'],
-                            borderColor: '#0f172a',
+                            backgroundColor: ['#538373', '#7a6a91'],
+                            borderColor: isDark ? '#1e232d' : '#ffffff',
                             borderWidth: 2,
                             hoverOffset: 8
                         }]
@@ -457,13 +458,13 @@
                         plugins: {
                             legend: {
                                 position: 'bottom',
-                                labels: { color: '#cbd5e1', font: { size: 12 }, padding: 12 }
+                                labels: { color: isDark ? '#cbd5e1' : '#5e6d82', font: { size: 12 }, padding: 12 }
                             },
                             tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleColor: '#f8fafc',
-                                bodyColor: '#cbd5e1',
-                                borderColor: '#334155',
+                                backgroundColor: isDark ? '#1e232d' : '#ffffff',
+                                titleColor: isDark ? '#f8fafc' : '#1e293b',
+                                bodyColor: isDark ? '#cbd5e1' : '#475569',
+                                borderColor: isDark ? '#2e3746' : '#dbe1e8',
                                 borderWidth: 1,
                                 padding: 10
                             }

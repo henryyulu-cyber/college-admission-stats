@@ -4,123 +4,123 @@
     {{if .HasSpecificFilters}}
     <!-- ==================== 1. 多維度特定篩選模式 (選取特定大學或科系時) ==================== -->
     <div class="space-y-6">
-        <!-- 頂部多維度篩選符合條件狀態橫幅 -->
-        <div class="bg-gradient-to-r from-sky-900/40 via-indigo-900/40 to-emerald-900/40 border border-sky-500/30 rounded-xl p-4.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-lg">
+        <!-- 頂部多維度篩選符合條件狀態橫幅 (莫蘭迪柔和漸層) -->
+        <div class="bg-gradient-to-r from-[#4f728c]/15 via-[#7a6a91]/15 to-[#538373]/15 dark:from-[#688fa8]/20 dark:via-[#9986b0]/20 dark:to-[#6da38e]/20 border border-[#4f728c]/30 dark:border-[#688fa8]/40 rounded-xl p-4.5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm">
             <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-sky-500/20 text-sky-400 rounded-lg">
+                <div class="p-2.5 bg-[#4f728c]/20 text-[#35546e] dark:text-[#9ac5e3] rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         🎯 多維度篩選結果分析
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#4f728c]/20 text-[#35546e] dark:text-[#9ac5e3] border border-[#4f728c]/30">
                             共啟用 {{.FilteredResult.ActiveConditionCount}} 個條件維度
                         </span>
                     </h3>
-                    <p class="text-xs text-slate-300 mt-1 flex flex-wrap items-center gap-1.5">
-                        <span class="text-slate-400">已生效條件：</span>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 flex flex-wrap items-center gap-1.5">
+                        <span class="text-slate-500 dark:text-slate-400">已生效條件：</span>
                         {{range .FilteredResult.ActiveConditions}}
-                        <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 border border-slate-700 text-[11px] font-medium">{{.}}</span>
+                        <span class="px-2 py-0.5 rounded bg-white dark:bg-[#252c38] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#2e3746] text-[11px] font-medium">{{.}}</span>
                         {{end}}
                     </p>
                 </div>
             </div>
-            <div class="text-xs text-slate-300 bg-slate-900/90 px-3.5 py-2 rounded-lg border border-slate-700 flex items-center gap-3">
-                <div>符合記錄：<span class="text-sky-400 font-bold text-sm">{{.FilteredResult.MatchedRecordsCount}}</span> 筆</div>
-                <div class="border-l border-slate-700 pl-3">錄取人數：<span class="text-emerald-400 font-extrabold text-sm">{{.FilteredResult.MatchedTotalStudents}}</span> 人</div>
+            <div class="text-xs text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-[#1e232d]/80 px-3.5 py-2 rounded-lg border border-slate-200 dark:border-[#2e3746] flex items-center gap-3">
+                <div>符合記錄：<span class="text-[#4f728c] dark:text-[#88b0cc] font-bold text-sm">{{.FilteredResult.MatchedRecordsCount}}</span> 筆</div>
+                <div class="border-l border-slate-200 dark:border-[#2e3746] pl-3">錄取人數：<span class="text-[#538373] dark:text-[#8ac2ae] font-extrabold text-sm">{{.FilteredResult.MatchedTotalStudents}}</span> 人</div>
             </div>
         </div>
 
-        <!-- 命中統計 KPI 卡片 -->
+        <!-- 命中統計 6 大 KPI 卡片 (莫蘭迪色盤) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <!-- 1. 符合總人數 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-slate-700 transition-colors">
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">符合總人數</span>
-                    <span class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">符合總人數</span>
+                    <span class="p-1.5 bg-[#4f728c]/10 text-[#4f728c] dark:text-[#88b0cc] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-white">{{.FilteredResult.MatchedTotalStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人</span>
+                    <span class="text-2xl font-extrabold text-slate-800 dark:text-slate-100">{{.FilteredResult.MatchedTotalStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-500">共 {{.FilteredResult.MatchedRecordsCount}} 筆升學記錄</div>
+                <div class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">共 {{.FilteredResult.MatchedRecordsCount}} 筆升學記錄</div>
             </div>
 
-            <!-- 2. 國立大學錄取人數與佔比 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-emerald-500/40 transition-colors">
+            <!-- 2. 國立大學錄取人數與佔比 (莫蘭迪鼠尾草綠) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#538373]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">國立大學</span>
-                    <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">國立大學</span>
+                    <span class="p-1.5 bg-[#538373]/10 text-[#538373] dark:text-[#8ac2ae] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-emerald-400">{{.FilteredResult.NationalStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人 ({{.FilteredResult.NationalRate}})</span>
+                    <span class="text-2xl font-extrabold text-[#538373] dark:text-[#8ac2ae]">{{.FilteredResult.NationalStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人 ({{.FilteredResult.NationalRate}})</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">國立大專校院錄取</div>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">國立大專校院錄取</div>
             </div>
 
-            <!-- 3. 頂尖大學 (台政清成陽) -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-sky-500/40 transition-colors">
+            <!-- 3. 頂尖大學 (台政清成陽 - 莫蘭迪霧霾藍) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#4f728c]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">頂尖大學</span>
-                    <span class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">頂尖大學</span>
+                    <span class="p-1.5 bg-[#4f728c]/10 text-[#4f728c] dark:text-[#88b0cc] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-sky-400">{{.FilteredResult.TopUnivStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人 ({{.FilteredResult.TopUnivRate}})</span>
+                    <span class="text-2xl font-extrabold text-[#4f728c] dark:text-[#88b0cc]">{{.FilteredResult.TopUnivStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人 ({{.FilteredResult.TopUnivRate}})</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">台政清成陽 5 校</div>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">台政清成陽 5 校</div>
             </div>
 
-            <!-- 4. 醫牙中錄取人數 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-rose-500/40 transition-colors">
+            <!-- 4. 醫牙中錄取人數 (莫蘭迪乾枯玫瑰粉) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#ab5c5c]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">醫牙中系所</span>
-                    <span class="p-1.5 bg-rose-500/10 text-rose-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">醫牙中系所</span>
+                    <span class="p-1.5 bg-[#ab5c5c]/10 text-[#ab5c5c] dark:text-[#db8888] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-rose-400">{{.FilteredResult.MedDentChineseStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人 ({{.FilteredResult.MedDentChineseRate}})</span>
+                    <span class="text-2xl font-extrabold text-[#ab5c5c] dark:text-[#db8888]">{{.FilteredResult.MedDentChineseStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人 ({{.FilteredResult.MedDentChineseRate}})</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">醫學/牙醫/中醫</div>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">醫學/牙醫/中醫</div>
             </div>
 
-            <!-- 5. 私立大學錄取人數 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-amber-500/40 transition-colors">
+            <!-- 5. 私立大學錄取人數 (莫蘭迪焦糖杏) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#c27d52]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">私立大學</span>
-                    <span class="p-1.5 bg-amber-500/10 text-amber-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">私立大學</span>
+                    <span class="p-1.5 bg-[#c27d52]/10 text-[#c27d52] dark:text-[#e0a47d] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-amber-400">{{.FilteredResult.PrivateStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人 ({{.FilteredResult.PrivateRate}})</span>
+                    <span class="text-2xl font-extrabold text-[#c27d52] dark:text-[#e0a47d]">{{.FilteredResult.PrivateStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人 ({{.FilteredResult.PrivateRate}})</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">綜合/醫學私大</div>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">綜合/醫學私大</div>
             </div>
 
-            <!-- 6. 技專校院 (科大) 錄取人數 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-purple-500/40 transition-colors">
+            <!-- 6. 技專校院 (科大) 錄取人數 (莫蘭迪煙燻紫) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#7a6a91]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">技專校院</span>
-                    <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">技專校院</span>
+                    <span class="p-1.5 bg-[#7a6a91]/10 text-[#7a6a91] dark:text-[#bcaed1] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-purple-400">{{.FilteredResult.TechStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人 ({{.FilteredResult.TechRate}})</span>
+                    <span class="text-2xl font-extrabold text-[#7a6a91] dark:text-[#bcaed1]">{{.FilteredResult.TechStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人 ({{.FilteredResult.TechRate}})</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">科大/技術學院</div>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">科大/技術學院</div>
             </div>
         </div>
     </div>
@@ -129,84 +129,84 @@
     <!-- ==================== 2. 多校橫向比較模式視圖 ==================== -->
     <div class="space-y-6">
         <!-- 頂部比較模式狀態提示橫幅 -->
-        <div class="bg-gradient-to-r from-sky-900/40 via-indigo-900/40 to-purple-900/40 border border-sky-500/30 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-lg">
+        <div class="bg-gradient-to-r from-[#4f728c]/15 via-[#7a6a91]/15 to-[#538373]/15 dark:from-[#688fa8]/20 dark:via-[#9986b0]/20 dark:to-[#6da38e]/20 border border-[#4f728c]/30 dark:border-[#688fa8]/40 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-sm">
             <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-sky-500/20 text-sky-400 rounded-lg">
+                <div class="p-2.5 bg-[#4f728c]/20 text-[#35546e] dark:text-[#9ac5e3] rounded-lg">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 </div>
                 <div>
-                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         🏫 多校升學 6 大指標橫向對比分析
-                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">共 {{len .ComparisonRows}} 所學校</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-[#4f728c]/20 text-[#35546e] dark:text-[#9ac5e3] border border-[#4f728c]/30">共 {{len .ComparisonRows}} 所學校</span>
                     </h3>
-                    <p class="text-xs text-slate-300 mt-0.5">頂大定義：國立臺灣大學、國立政治大學、國立清華大學、國立成功大學、國立陽明交通大學 | 醫牙中定義：醫學系、牙醫學系、中醫學系</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">頂大定義：臺大、政大、清大、成大、陽明交大 | 醫牙中定義：醫學系、牙醫學系、中醫學系</p>
                 </div>
             </div>
-            <div class="text-xs text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-lg border border-slate-700">
-                學年度：<span class="text-sky-400 font-bold">{{if eq .SelectedYear 0}}全部學年度累計{{else}}{{.SelectedYear}} 學年度{{end}}</span>
+            <div class="text-xs text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-[#1e232d]/80 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-[#2e3746]">
+                學年度：<span class="text-[#4f728c] dark:text-[#88b0cc] font-bold">{{if eq .SelectedYear 0}}全部學年度累計{{else}}{{.SelectedYear}} 學年度{{end}}</span>
             </div>
         </div>
 
         <!-- 多校 6 大指標核心對比表格 -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-                <h4 class="text-sm font-bold text-white flex items-center gap-2">
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-[#2e3746] flex items-center justify-between">
+                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <span>📊 各校 6 大升學核心指標對比總表</span>
                 </h4>
-                <span class="text-xs text-slate-400">數據包含公立與私立高中升讀分佈</span>
+                <span class="text-xs text-slate-500 dark:text-slate-400">數據包含公立與私立高中升讀分佈</span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-950/80 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                        <tr class="bg-slate-50 dark:bg-[#13161c] text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-[#2e3746]">
                             <th class="py-3 px-4">高中學校名稱</th>
                             <th class="py-3 px-3 text-center">縣市 / 性質</th>
                             <th class="py-3 px-3 text-right">總升學人數</th>
-                            <th class="py-3 px-3 text-right text-emerald-400">國立大學錄取率</th>
-                            <th class="py-3 px-3 text-right text-sky-400">頂尖大學錄取率</th>
-                            <th class="py-3 px-3 text-right text-rose-400">醫牙中錄取率</th>
-                            <th class="py-3 px-3 text-right text-amber-400">私立大學錄取</th>
-                            <th class="py-3 px-3 text-right text-purple-400">技專校院 (科大)</th>
+                            <th class="py-3 px-3 text-right text-[#538373] dark:text-[#8ac2ae]">國立大學錄取率</th>
+                            <th class="py-3 px-3 text-right text-[#4f728c] dark:text-[#88b0cc]">頂尖大學錄取率</th>
+                            <th class="py-3 px-3 text-right text-[#ab5c5c] dark:text-[#db8888]">醫牙中錄取率</th>
+                            <th class="py-3 px-3 text-right text-[#c27d52] dark:text-[#e0a47d]">私立大學錄取</th>
+                            <th class="py-3 px-3 text-right text-[#7a6a91] dark:text-[#bcaed1]">技專校院 (科大)</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-slate-800/60 text-xs">
+                    <tbody class="divide-y divide-slate-100 dark:divide-[#2e3746]/60 text-xs">
                         {{range .ComparisonRows}}
-                        <tr class="hover:bg-slate-800/40 transition-colors">
-                            <td class="py-3.5 px-4 font-bold text-white flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-[#252c38] transition-colors">
+                            <td class="py-3.5 px-4 font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#4f728c] dark:bg-[#88b0cc]"></span>
                                 {{.HighSchoolName}}
                             </td>
                             <td class="py-3.5 px-3 text-center">
-                                <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px]">{{.City}}</span>
-                                <span class="ml-1 px-1.5 py-0.5 rounded {{if eq .SchoolType "公立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-amber-500/10 text-amber-400 border border-amber-500/20{{end}} text-[10px]">{{.SchoolType}}</span>
+                                <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-[#252c38] text-slate-700 dark:text-slate-300 text-[11px]">{{.City}}</span>
+                                <span class="ml-1 px-1.5 py-0.5 rounded {{if eq .SchoolType "公立"}}bg-[#538373]/10 text-[#538373] border border-[#538373]/20 dark:bg-[#6da38e]/20 dark:text-[#9bd0bc]{{else}}bg-[#c27d52]/10 text-[#c27d52] border border-[#c27d52]/20 dark:bg-[#d09168]/20 dark:text-[#e8b695]{{end}} text-[10px]">{{.SchoolType}}</span>
                             </td>
-                            <td class="py-3.5 px-3 text-right font-extrabold text-white text-sm">
-                                {{.TotalStudents}} <span class="text-[10px] font-normal text-slate-500">人</span>
+                            <td class="py-3.5 px-3 text-right font-extrabold text-slate-800 dark:text-slate-100 text-sm">
+                                {{.TotalStudents}} <span class="text-[10px] font-normal text-slate-400">人</span>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                                <span class="font-bold text-emerald-400">{{.NationalRate}}</span>
+                                <span class="font-bold text-[#538373] dark:text-[#8ac2ae]">{{.NationalRate}}</span>
                                 <div class="text-[10px] text-slate-400">({{.NationalStudents}} 人)</div>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                                <span class="font-bold text-sky-400">{{.TopUnivRate}}</span>
+                                <span class="font-bold text-[#4f728c] dark:text-[#88b0cc]">{{.TopUnivRate}}</span>
                                 <div class="text-[10px] text-slate-400">({{.TopUnivStudents}} 人)</div>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                                <span class="font-bold text-rose-400">{{.MedDentChineseRate}}</span>
+                                <span class="font-bold text-[#ab5c5c] dark:text-[#db8888]">{{.MedDentChineseRate}}</span>
                                 <div class="text-[10px] text-slate-400">({{.MedDentChineseStudents}} 人)</div>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                                <span class="font-bold text-amber-400">{{.PrivateRate}}</span>
+                                <span class="font-bold text-[#c27d52] dark:text-[#e0a47d]">{{.PrivateRate}}</span>
                                 <div class="text-[10px] text-slate-400">({{.PrivateStudents}} 人)</div>
                             </td>
                             <td class="py-3.5 px-3 text-right">
-                                <span class="font-bold text-purple-400">{{.TechRate}}</span>
+                                <span class="font-bold text-[#7a6a91] dark:text-[#bcaed1]">{{.TechRate}}</span>
                                 <div class="text-[10px] text-slate-400">({{.TechStudents}} 人)</div>
                             </td>
                         </tr>
                         {{else}}
                         <tr>
-                            <td colspan="8" class="text-center py-8 text-slate-500">查無多校對比資料</td>
+                            <td colspan="8" class="text-center py-8 text-slate-400">查無多校對比資料</td>
                         </tr>
                         {{end}}
                     </tbody>
@@ -214,21 +214,21 @@
             </div>
         </div>
 
-        <!-- 多校 6 大指標分組對比視覺化圖表 (Chart.js 直方圖) -->
-        <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-xl">
+        <!-- 多校 6 大指標分組對比視覺化圖表 (Chart.js 莫蘭迪直方圖) -->
+        <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-6">
                 <div>
-                    <h4 class="text-base font-bold text-white flex items-center gap-2">
+                    <h4 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                         <span>📈 多校核心升學率百分比對比直方圖</span>
                     </h4>
-                    <p class="text-xs text-slate-400">直接對比各校在「國立率、頂大率、醫牙中率、私立率、科大率」的錄取比例</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">直接對比各校在「國立率、頂大率、醫牙中率、私立率、科大率」的錄取比例</p>
                 </div>
-                <div class="flex items-center gap-3 text-xs">
-                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-emerald-500"></span>國立率</span>
-                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-sky-500"></span>頂大率</span>
-                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-rose-500"></span>醫牙中率</span>
-                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-amber-500"></span>私立率</span>
-                    <span class="flex items-center gap-1"><span class="w-3 h-3 rounded bg-purple-500"></span>科大率</span>
+                <div class="flex items-center gap-3 text-xs flex-wrap">
+                    <span class="flex items-center gap-1 text-slate-700 dark:text-slate-300"><span class="w-3 h-3 rounded bg-[#538373]"></span>國立率</span>
+                    <span class="flex items-center gap-1 text-slate-700 dark:text-slate-300"><span class="w-3 h-3 rounded bg-[#4f728c]"></span>頂大率</span>
+                    <span class="flex items-center gap-1 text-slate-700 dark:text-slate-300"><span class="w-3 h-3 rounded bg-[#ab5c5c]"></span>醫牙中率</span>
+                    <span class="flex items-center gap-1 text-slate-700 dark:text-slate-300"><span class="w-3 h-3 rounded bg-[#c27d52]"></span>私立率</span>
+                    <span class="flex items-center gap-1 text-slate-700 dark:text-slate-300"><span class="w-3 h-3 rounded bg-[#7a6a91]"></span>科大率</span>
                 </div>
             </div>
             <div class="relative h-[380px] w-full">
@@ -236,7 +236,7 @@
             </div>
         </div>
 
-        <!-- 初始化多校對比圖表腳本 -->
+        <!-- 初始化多校對比圖表腳本 (莫蘭迪色階配置) -->
         <script>
             (function() {
                 if (window.multiCompareChartInstance) {
@@ -245,6 +245,8 @@
 
                 var ctx = document.getElementById('multiSchoolCompareChart');
                 if (!ctx) return;
+
+                var isDark = document.documentElement.classList.contains('dark');
 
                 var labels = [
                     {{range .ComparisonRows}}
@@ -290,40 +292,40 @@
                             {
                                 label: '國立大學錄取率 (%)',
                                 data: nationalData,
-                                backgroundColor: 'rgba(16, 185, 129, 0.85)',
-                                borderColor: 'rgb(16, 185, 129)',
+                                backgroundColor: 'rgba(83, 131, 115, 0.85)',
+                                borderColor: 'rgb(83, 131, 115)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '頂尖大學錄取率 (%)',
                                 data: topData,
-                                backgroundColor: 'rgba(14, 165, 233, 0.85)',
-                                borderColor: 'rgb(14, 165, 233)',
+                                backgroundColor: 'rgba(79, 114, 140, 0.85)',
+                                borderColor: 'rgb(79, 114, 140)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '醫牙中錄取率 (%)',
                                 data: medData,
-                                backgroundColor: 'rgba(244, 63, 94, 0.85)',
-                                borderColor: 'rgb(244, 63, 94)',
+                                backgroundColor: 'rgba(171, 92, 92, 0.85)',
+                                borderColor: 'rgb(171, 92, 92)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '私立大學錄取率 (%)',
                                 data: privateData,
-                                backgroundColor: 'rgba(245, 158, 11, 0.85)',
-                                borderColor: 'rgb(245, 158, 11)',
+                                backgroundColor: 'rgba(194, 125, 82, 0.85)',
+                                borderColor: 'rgb(194, 125, 82)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             },
                             {
                                 label: '技專校院錄取率 (%)',
                                 data: techData,
-                                backgroundColor: 'rgba(168, 85, 247, 0.85)',
-                                borderColor: 'rgb(168, 85, 247)',
+                                backgroundColor: 'rgba(122, 106, 145, 0.85)',
+                                borderColor: 'rgb(122, 106, 145)',
                                 borderWidth: 1,
                                 borderRadius: 4,
                             }
@@ -341,7 +343,7 @@
                                 display: true,
                                 position: 'top',
                                 labels: {
-                                    color: '#94a3b8',
+                                    color: isDark ? '#94a3b8' : '#5e6d82',
                                     font: { size: 11 }
                                 }
                             },
@@ -355,15 +357,15 @@
                         },
                         scales: {
                             x: {
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
-                                ticks: { color: '#cbd5e1', font: { size: 11, weight: 'bold' } }
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
+                                ticks: { color: isDark ? '#cbd5e1' : '#475569', font: { size: 11, weight: 'bold' } }
                             },
                             y: {
                                 min: 0,
                                 max: 100,
-                                grid: { color: 'rgba(51, 65, 85, 0.3)' },
+                                grid: { color: isDark ? 'rgba(46, 55, 70, 0.4)' : 'rgba(219, 225, 232, 0.5)' },
                                 ticks: {
-                                    color: '#94a3b8',
+                                    color: isDark ? '#94a3b8' : '#5e6d82',
                                     callback: function(value) { return value + '%'; }
                                 }
                             }
@@ -377,102 +379,102 @@
     {{else}}
     <!-- ==================== 3. 單校詳細流向視圖 (單一高中且未限制大學/科系) ==================== -->
     <div class="space-y-6">
-        <!-- 6 大核心 KPI 指標卡片 (含人數與錄取率百分比) -->
+        <!-- 6 大核心 KPI 指標卡片 (莫蘭迪色盤) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
             <!-- 1. 總升學人數卡片 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-slate-700 transition-colors">
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">總升學人數</span>
-                    <span class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">總升學人數</span>
+                    <span class="p-1.5 bg-[#4f728c]/10 text-[#4f728c] dark:text-[#88b0cc] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-white">{{.Summary.TotalStudents}}</span>
-                    <span class="ml-1.5 text-xs text-slate-400">人</span>
+                    <span class="text-2xl font-extrabold text-slate-800 dark:text-slate-100">{{.Summary.TotalStudents}}</span>
+                    <span class="ml-1.5 text-xs text-slate-500">人</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-500">
+                <div class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">
                     {{.Summary.City}} · {{.Summary.SchoolType}}
                 </div>
             </div>
 
-            <!-- 2. 國立大學錄取率卡片 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-emerald-500/40 transition-colors">
+            <!-- 2. 國立大學錄取率卡片 (莫蘭迪鼠尾草綠) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#538373]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">國立大學錄取率</span>
-                    <span class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">國立大學錄取率</span>
+                    <span class="p-1.5 bg-[#538373]/10 text-[#538373] dark:text-[#8ac2ae] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-emerald-400">{{.Summary.NationalRate}}</span>
+                    <span class="text-2xl font-extrabold text-[#538373] dark:text-[#8ac2ae]">{{.Summary.NationalRate}}</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    錄取人數：<span class="text-slate-200 font-semibold">{{.Summary.NationalUnivStudents}} 人</span>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    錄取人數：<span class="text-slate-700 dark:text-slate-200 font-semibold">{{.Summary.NationalUnivStudents}} 人</span>
                 </div>
             </div>
 
-            <!-- 3. 頂尖大學錄取率卡片 (台政清成陽) -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-sky-500/40 transition-colors">
+            <!-- 3. 頂尖大學錄取率卡片 (莫蘭迪霧霾藍) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#4f728c]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">頂尖大學錄取率</span>
-                    <span class="p-1.5 bg-sky-500/10 text-sky-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">頂尖大學錄取率</span>
+                    <span class="p-1.5 bg-[#4f728c]/10 text-[#4f728c] dark:text-[#88b0cc] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-sky-400">{{.Summary.TopUnivRate}}</span>
+                    <span class="text-2xl font-extrabold text-[#4f728c] dark:text-[#88b0cc]">{{.Summary.TopUnivRate}}</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    台政清成陽：<span class="text-slate-200 font-semibold">{{.Summary.TopUnivStudents}} 人</span>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    台政清成陽：<span class="text-slate-700 dark:text-slate-200 font-semibold">{{.Summary.TopUnivStudents}} 人</span>
                 </div>
             </div>
 
-            <!-- 4. 醫牙中錄取率卡片 (醫學+牙醫+中醫) -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-rose-500/40 transition-colors">
+            <!-- 4. 醫牙中錄取率卡片 (莫蘭迪乾枯玫瑰粉) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#ab5c5c]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">醫牙中錄取率</span>
-                    <span class="p-1.5 bg-rose-500/10 text-rose-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">醫牙中錄取率</span>
+                    <span class="p-1.5 bg-[#ab5c5c]/10 text-[#ab5c5c] dark:text-[#db8888] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-rose-400">{{.Summary.MedDentChineseRate}}</span>
+                    <span class="text-2xl font-extrabold text-[#ab5c5c] dark:text-[#db8888]">{{.Summary.MedDentChineseRate}}</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    醫學/牙醫/中醫：<span class="text-slate-200 font-semibold">{{.Summary.MedDentChineseStudents}} 人</span>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    醫學/牙醫/中醫：<span class="text-slate-700 dark:text-slate-200 font-semibold">{{.Summary.MedDentChineseStudents}} 人</span>
                 </div>
             </div>
 
-            <!-- 5. 私立大學錄取卡片 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-amber-500/40 transition-colors">
+            <!-- 5. 私立大學錄取卡片 (莫蘭迪焦糖杏) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#c27d52]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">私立大學錄取</span>
-                    <span class="p-1.5 bg-amber-500/10 text-amber-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">私立大學錄取</span>
+                    <span class="p-1.5 bg-[#c27d52]/10 text-[#c27d52] dark:text-[#e0a47d] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-amber-400">{{.Summary.PrivateRate}}</span>
+                    <span class="text-2xl font-extrabold text-[#c27d52] dark:text-[#e0a47d]">{{.Summary.PrivateRate}}</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    綜合/醫學私大：<span class="text-slate-200 font-semibold">{{.Summary.PrivateUnivStudents}} 人</span>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    綜合/醫學私大：<span class="text-slate-700 dark:text-slate-200 font-semibold">{{.Summary.PrivateUnivStudents}} 人</span>
                 </div>
             </div>
 
-            <!-- 6. 技專校院 (科大) 卡片 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-4 shadow-sm hover:border-purple-500/40 transition-colors">
+            <!-- 6. 技專校院 (科大) 卡片 (莫蘭迪煙燻紫) -->
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 shadow-sm hover:border-[#7a6a91]/40 transition-colors">
                 <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">技專校院 (科大)</span>
-                    <span class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">
+                    <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">技專校院 (科大)</span>
+                    <span class="p-1.5 bg-[#7a6a91]/10 text-[#7a6a91] dark:text-[#bcaed1] rounded-lg">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
                     </span>
                 </div>
                 <div class="mt-2 flex items-baseline">
-                    <span class="text-2xl font-extrabold text-purple-400">{{.Summary.TechRate}}</span>
+                    <span class="text-2xl font-extrabold text-[#7a6a91] dark:text-[#bcaed1]">{{.Summary.TechRate}}</span>
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    科大/技術學院：<span class="text-slate-200 font-semibold">{{.Summary.TechUnivStudents}} 人</span>
+                <div class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                    科大/技術學院：<span class="text-slate-700 dark:text-slate-200 font-semibold">{{.Summary.TechUnivStudents}} 人</span>
                 </div>
             </div>
         </div>
@@ -480,51 +482,51 @@
         <!-- 中段：單校錄取大學排行與 18 大學群分佈 -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- 錄取大學分佈排行 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
-                <h3 class="text-base font-bold text-white mb-4 flex items-center justify-between">
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
                     <span>🎓 錄取大學排行 Top 15</span>
-                    <span class="text-xs font-normal text-slate-400">依升學人數排序</span>
+                    <span class="text-xs font-normal text-slate-500 dark:text-slate-400">依升學人數排序</span>
                 </h3>
                 <div class="space-y-3">
                     {{range .Destinations}}
                     <div>
                         <div class="flex justify-between text-xs font-medium mb-1">
-                            <span class="text-slate-200 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{if eq .UniversityType "國立"}}bg-emerald-400{{else}}bg-amber-400{{end}}"></span>
+                            <span class="text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full {{if eq .UniversityType "國立"}}bg-[#538373] dark:bg-[#8ac2ae]{{else}}bg-[#c27d52] dark:bg-[#e0a47d]{{end}}"></span>
                                 {{.UniversityName}}
                                 <span class="text-[10px] text-slate-400">({{.UniversityType}}·{{.UniversitySystem}})</span>
                             </span>
-                            <span class="text-sky-400 font-semibold">{{.StudentCount}} 人 ({{.Percentage}}%)</span>
+                            <span class="text-[#4f728c] dark:text-[#88b0cc] font-semibold">{{.StudentCount}} 人 ({{.Percentage}}%)</span>
                         </div>
-                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                            <div class="bg-gradient-to-r from-sky-500 to-indigo-500 h-2 rounded-full" style="width: {{.Percentage}}%"></div>
+                        <div class="w-full bg-slate-100 dark:bg-[#13161c] rounded-full h-2 overflow-hidden">
+                            <div class="bg-gradient-to-r from-[#4f728c] to-[#7a6a91] dark:from-[#688fa8] dark:to-[#9986b0] h-2 rounded-full" style="width: {{.Percentage}}%"></div>
                         </div>
                     </div>
                     {{else}}
-                    <div class="text-center py-8 text-slate-500 text-sm">無錄取大學資料</div>
+                    <div class="text-center py-8 text-slate-400 text-sm">無錄取大學資料</div>
                     {{end}}
                 </div>
             </div>
 
             <!-- 18 大學群升讀分佈 -->
-            <div class="bg-slate-900/90 border border-slate-800 rounded-xl p-6 shadow-sm">
-                <h3 class="text-base font-bold text-white mb-4 flex items-center justify-between">
+            <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm">
+                <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
                     <span>📊 18 大學群升學領域分佈</span>
-                    <span class="text-xs font-normal text-slate-400">學群佔比分佈</span>
+                    <span class="text-xs font-normal text-slate-500 dark:text-slate-400">學群佔比分佈</span>
                 </h3>
                 <div class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
                     {{range .Groups}}
                     <div>
                         <div class="flex justify-between text-xs font-medium mb-1">
-                            <span class="text-slate-200 font-medium">{{.DisciplineGroup}}</span>
-                            <span class="text-indigo-400 font-semibold">{{.StudentCount}} 人 ({{.Percentage}}%)</span>
+                            <span class="text-slate-700 dark:text-slate-200 font-medium">{{.DisciplineGroup}}</span>
+                            <span class="text-[#7a6a91] dark:text-[#bcaed1] font-semibold">{{.StudentCount}} 人 ({{.Percentage}}%)</span>
                         </div>
-                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-                            <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full" style="width: {{.Percentage}}%"></div>
+                        <div class="w-full bg-slate-100 dark:bg-[#13161c] rounded-full h-2 overflow-hidden">
+                            <div class="bg-gradient-to-r from-[#7a6a91] to-[#ab5c5c] dark:from-[#9986b0] dark:to-[#db8888] h-2 rounded-full" style="width: {{.Percentage}}%"></div>
                         </div>
                     </div>
                     {{else}}
-                    <div class="text-center py-8 text-slate-500 text-sm">無學群分佈資料</div>
+                    <div class="text-center py-8 text-slate-400 text-sm">無學群分佈資料</div>
                     {{end}}
                 </div>
             </div>
@@ -533,20 +535,20 @@
     {{end}}
 
     <!-- ==================== 4. 📋 符合條件之升學明細清單總表 (所有模式均提供完整明細) ==================== -->
-    <div class="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden shadow-xl" x-data="{ tableSearch: '' }">
+    <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl overflow-hidden shadow-sm" x-data="{ tableSearch: '' }">
         <!-- 清單標頭與即時過濾框 -->
-        <div class="px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/50">
+        <div class="px-6 py-4 border-b border-slate-100 dark:border-[#2e3746] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 dark:bg-[#13161c]/50">
             <div>
-                <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <span>📋 符合條件之升學明細清單</span>
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#4f728c]/15 text-[#35546e] dark:bg-[#688fa8]/20 dark:text-[#9ac5e3] border border-[#4f728c]/30">
                         共 {{.FilteredResult.MatchedRecordsCount}} 筆資料 / {{.FilteredResult.MatchedTotalStudents}} 位學生
                     </span>
                 </h4>
-                <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
-                    <span class="text-slate-500">篩選維度：符合 {{.FilteredResult.ActiveConditionCount}} 項條件</span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
+                    <span class="text-slate-400">篩選維度：符合 {{.FilteredResult.ActiveConditionCount}} 項條件</span>
                     {{range .FilteredResult.ActiveConditions}}
-                    <span class="px-2 py-0.2 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">{{.}}</span>
+                    <span class="px-2 py-0.5 rounded bg-white dark:bg-[#252c38] text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#2e3746] text-[10px]">{{.}}</span>
                     {{end}}
                 </p>
             </div>
@@ -555,7 +557,7 @@
                 <input type="text" 
                        x-model="tableSearch" 
                        placeholder="在清單中即時過濾..." 
-                       class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none focus:ring-1 focus:ring-sky-500">
+                       class="w-full bg-white dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none focus:ring-1 focus:ring-[#4f728c]/60">
                 <svg class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
         </div>
@@ -563,7 +565,7 @@
         <!-- 清單資料表格 -->
         <div class="overflow-x-auto max-h-[520px] overflow-y-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="sticky top-0 bg-slate-950 text-[11px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 z-10">
+                <thead class="sticky top-0 bg-slate-50 dark:bg-[#13161c] text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-[#2e3746] z-10">
                     <tr>
                         <th class="py-3 px-4">學年度</th>
                         <th class="py-3 px-4">高中學校</th>
@@ -573,16 +575,16 @@
                         <th class="py-3 px-4 text-right">錄取人數</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-800/60 text-xs">
+                <tbody class="divide-y divide-slate-100 dark:divide-[#2e3746]/60 text-xs">
                     {{range .FilteredResult.Records}}
-                    <tr class="hover:bg-slate-800/40 transition-colors"
+                    <tr class="hover:bg-slate-50 dark:hover:bg-[#252c38] transition-colors"
                         x-show="!tableSearch || '{{.HighSchoolName}} {{.UniversityName}} {{.DepartmentName}} {{.DisciplineGroup}} {{.AcademicYear}}'.toLowerCase().includes(tableSearch.toLowerCase())">
                         <!-- 學年度 -->
-                        <td class="py-3 px-4 text-slate-300 font-medium whitespace-nowrap">
-                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px] font-bold">{{.AcademicYear}} 學年</span>
+                        <td class="py-3 px-4 text-slate-600 dark:text-slate-300 font-medium whitespace-nowrap">
+                            <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-[#252c38] text-slate-700 dark:text-slate-300 text-[11px] font-bold">{{.AcademicYear}} 學年</span>
                         </td>
                         <!-- 高中學校 -->
-                        <td class="py-3 px-4 font-semibold text-white whitespace-nowrap">
+                        <td class="py-3 px-4 font-semibold text-slate-800 dark:text-slate-100 whitespace-nowrap">
                             <div class="flex items-center gap-1.5">
                                 <span>{{.HighSchoolName}}</span>
                                 <span class="text-[10px] text-slate-400">({{.HighSchoolCity}}·{{.HighSchoolType}})</span>
@@ -591,39 +593,39 @@
                         <!-- 錄取大學 -->
                         <td class="py-3 px-4 whitespace-nowrap">
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{if eq .UniversityType "國立"}}bg-emerald-400{{else}}bg-amber-400{{end}}"></span>
-                                <span class="font-medium text-slate-200">{{.UniversityName}}</span>
-                                <span class="px-1.5 py-0.2 rounded text-[10px] {{if eq .UniversityType "國立"}}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{{else}}bg-amber-500/10 text-amber-400 border border-amber-500/20{{end}}">{{.UniversityType}}</span>
+                                <span class="w-2 h-2 rounded-full {{if eq .UniversityType "國立"}}bg-[#538373] dark:bg-[#8ac2ae]{{else}}bg-[#c27d52] dark:bg-[#e0a47d]{{end}}"></span>
+                                <span class="font-medium text-slate-700 dark:text-slate-200">{{.UniversityName}}</span>
+                                <span class="px-1.5 py-0.2 rounded text-[10px] {{if eq .UniversityType "國立"}}bg-[#538373]/10 text-[#538373] border border-[#538373]/20 dark:bg-[#6da38e]/20 dark:text-[#9bd0bc]{{else}}bg-[#c27d52]/10 text-[#c27d52] border border-[#c27d52]/20 dark:bg-[#d09168]/20 dark:text-[#e8b695]{{end}}">{{.UniversityType}}</span>
                             </div>
                         </td>
-                        <!-- 錄取學系 -->
-                        <td class="py-3 px-4 font-medium text-sky-300">
+                        <!-- 錄取學系 (莫蘭迪霧霾藍文字) -->
+                        <td class="py-3 px-4 font-medium text-[#4f728c] dark:text-[#88b0cc]">
                             {{.DepartmentName}}
                         </td>
-                        <!-- 學群分類 -->
+                        <!-- 學群分類 (莫蘭迪薰衣草紫標籤) -->
                         <td class="py-3 px-3 whitespace-nowrap">
-                            <span class="px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-[11px] font-medium">
+                            <span class="px-2 py-0.5 rounded bg-[#7a6a91]/10 text-[#59496e] dark:bg-[#9986b0]/20 dark:text-[#cbbce0] border border-[#7a6a91]/20 text-[11px] font-medium">
                                 {{.DisciplineGroup}}
                             </span>
                         </td>
                         <!-- 錄取人數 -->
-                        <td class="py-3 px-4 text-right font-extrabold text-white whitespace-nowrap">
-                            <span class="text-sm text-sky-400">{{.StudentCount}}</span>
-                            <span class="text-[10px] text-slate-500 font-normal ml-0.5">人</span>
+                        <td class="py-3 px-4 text-right font-extrabold text-slate-800 dark:text-slate-100 whitespace-nowrap">
+                            <span class="text-sm text-[#4f728c] dark:text-[#88b0cc]">{{.StudentCount}}</span>
+                            <span class="text-[10px] text-slate-400 font-normal ml-0.5">人</span>
                         </td>
                     </tr>
                     {{else}}
                     <tr>
-                        <td colspan="6" class="text-center py-10 text-slate-500">
+                        <td colspan="6" class="text-center py-10 text-slate-400">
                             <div class="text-sm">查無符合此條件組合的升學明細</div>
-                            <div class="text-xs text-slate-600 mt-1">請嘗試放寬錄取學校或科系之篩選條件</div>
+                            <div class="text-xs text-slate-500 mt-1">請嘗試放寬錄取學校或科系之篩選條件</div>
                         </td>
                     </tr>
                     {{end}}
                 </tbody>
                 <!-- 底部統計合計列 -->
                 {{if gt .FilteredResult.MatchedRecordsCount 0}}
-                <tfoot class="bg-slate-950 text-xs font-bold text-slate-300 border-t border-slate-700">
+                <tfoot class="bg-slate-50 dark:bg-[#13161c] text-xs font-bold text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-[#2e3746]">
                     <tr>
                         <td class="py-3 px-4" colspan="2">合計共 {{.FilteredResult.MatchedRecordsCount}} 筆升學記錄</td>
                         <td class="py-3 px-4" colspan="3">
@@ -631,7 +633,7 @@
                             頂大: {{.FilteredResult.TopUnivStudents}} 人 ({{.FilteredResult.TopUnivRate}}) · 
                             醫牙中: {{.FilteredResult.MedDentChineseStudents}} 人 ({{.FilteredResult.MedDentChineseRate}})
                         </td>
-                        <td class="py-3 px-4 text-right text-emerald-400 text-sm font-extrabold">
+                        <td class="py-3 px-4 text-right text-[#538373] dark:text-[#8ac2ae] text-sm font-extrabold">
                             {{.FilteredResult.MatchedTotalStudents}} <span class="text-xs font-normal text-slate-400">人</span>
                         </td>
                     </tr>
