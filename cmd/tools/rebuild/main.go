@@ -1,8 +1,6 @@
 package main
 
 import (
-	// 引入 SQL 資料庫抽象介面套件
-	"database/sql"
 	// 引入格式化輸出套件
 	"fmt"
 	// 引入標準日誌套件
@@ -15,8 +13,9 @@ import (
 	// 引入純 Go SQLite 驅動
 	_ "modernc.org/sqlite"
 
-	// 引入本專案 collector 套件
+	// 引入本專案 collector 與 database 套件
 	"college-admission-stats/internal/collector"
+	"college-admission-stats/internal/database"
 )
 
 // main 為升學數據全量真實性校準重建工具的進入點
@@ -29,16 +28,12 @@ func main() {
 	// 定義資料快取目錄
 	dataDir := filepath.Join("data")
 
-	// 開啟 SQLite 連線
-	db, err := sql.Open("sqlite", dbPath)
+	// 初始化資料庫連線池並自動建立資料表結構 (admissions, sync_logs, 索引等)
+	db, err := database.InitDB(dbPath)
 	if err != nil {
-		log.Fatalf("[致命錯誤] 無法開啟資料庫 %s: %v", dbPath, err)
+		log.Fatalf("[致命錯誤] 初始化資料庫結構失敗 %s: %v", dbPath, err)
 	}
 	defer db.Close()
-
-	// 啟用 SQLite WAL 高效能日誌模式
-	_, _ = db.Exec("PRAGMA journal_mode=WAL;")
-	_, _ = db.Exec("PRAGMA synchronous=NORMAL;")
 
 	// 初始化 Downloader 數據管理器
 	dl := collector.NewDownloader(db, dataDir)
