@@ -45,6 +45,8 @@
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         [x-cloak] { display: none !important; }
     </style>
 </head>
@@ -70,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- 功能分頁導覽列 -->
+            <!-- 桌機功能分頁導覽列 -->
             <nav class="hidden lg:flex items-center space-x-1">
                 <a href="/" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-sky-500/10 text-sky-400 border border-sky-500/20{{else}}text-slate-300 hover:bg-slate-800 hover:text-white{{end}}">
                     🏫 高中升學流向
@@ -94,6 +96,31 @@
                     🔄 數據同步中心
                 </a>
             </nav>
+        </div>
+
+        <!-- 手機端專屬：可橫向滑動之分頁導覽列 (Mobile Scrollable Nav) -->
+        <div class="lg:hidden border-t border-slate-800/80 bg-slate-900/95 overflow-x-auto py-2 px-4 flex items-center space-x-2 no-scrollbar">
+            <a href="/" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "highschool"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                🏫 高中升學
+            </a>
+            <a href="/medical" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "medical"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                🏥 醫牙中專區
+            </a>
+            <a href="/disciplines" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "disciplines"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                📊 學群系所
+            </a>
+            <a href="/university" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "university"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                🎓 大學生源
+            </a>
+            <a href="/group" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "group"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                📈 18學群
+            </a>
+            <a href="/explore" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "explore"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                🔍 明細檢索
+            </a>
+            <a href="/sync" class="whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-medium transition-colors {{if eq .ActiveTab "sync"}}bg-sky-500/20 text-sky-300 border border-sky-500/30{{else}}text-slate-300 bg-slate-800/60 hover:text-white{{end}}">
+                🔄 數據同步
+            </a>
         </div>
     </header>
 
