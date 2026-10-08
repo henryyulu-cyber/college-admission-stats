@@ -557,6 +557,20 @@ func (h *AdmissionHandler) HandleDisciplines(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "載入學系列表失敗: "+err.Error())
 	}
 
+	// 檢查已傳入之 dept 是否屬於當前學群；若不屬於（例如更換了學群），自動重設為空字串以預設展示全學群
+	if dept != "" {
+		isValidDept := false
+		for _, d := range depts {
+			if d == dept {
+				isValidDept = true
+				break
+			}
+		}
+		if !isValidDept {
+			dept = ""
+		}
+	}
+
 	// 4. 取得學群總體 KPI
 	summary, err := h.Service.GetDisciplineGroupSummary(ctx, group, year)
 	if err != nil {

@@ -1,5 +1,57 @@
-<!-- 局部置換容器：包含學群 KPI 指標、系所大餅圖、生源直方圖與明細 -->
+<!-- 局部置換容器：包含學群篩選器面板、學群 KPI 指標、系所大餅圖、生源直方圖與明細 -->
 <div id="disciplines-content" class="space-y-6">
+    <!-- 頁面標題與操作控制列 (莫蘭迪風格) -->
+    <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-6 shadow-sm transition-colors duration-200">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight flex items-center gap-2">
+                    <span class="p-2 bg-[#538373]/10 text-[#538373] dark:text-[#8ac2ae] rounded-lg">📊</span>
+                    學群與系所深度分析中心
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">深度解析 18 大學群內部系所人數分佈佔比與生源高中流向</p>
+            </div>
+
+            <!-- HTMX 篩選表單 -->
+            <form id="disciplines-form" class="flex flex-wrap items-center gap-2.5"
+                  hx-get="/disciplines"
+                  hx-target="#disciplines-content"
+                  hx-swap="outerHTML">
+                
+                <!-- 18 大學群選擇下拉選單 (切換學群時自動清空 dept，以載入新學群的全部學系) -->
+                <div class="relative">
+                    <label class="text-[11px] text-slate-500 dark:text-slate-400 mr-1">學群：</label>
+                    <select name="group" class="bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[#538373] cursor-pointer" onchange="document.getElementById('dept-select').value=''; document.getElementById('disciplines-form').dispatchEvent(new Event('submit'))">
+                        {{range .Options.Groups}}
+                        <option value="{{.}}" {{if eq $.SelectedGroup .}}selected{{end}}>{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+
+                <!-- 學年度篩選下拉選單 -->
+                <div class="relative">
+                    <label class="text-[11px] text-slate-500 dark:text-slate-400 mr-1">學年：</label>
+                    <select name="year" class="bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[#538373] cursor-pointer" onchange="document.getElementById('disciplines-form').dispatchEvent(new Event('submit'))">
+                        <option value="0" {{if eq .SelectedYear 0}}selected{{end}}>全部學年度 (110~115)</option>
+                        {{range .Options.Years}}
+                        <option value="{{.}}" {{if eq $.SelectedYear .}}selected{{end}}>{{.}} 學年度</option>
+                        {{end}}
+                    </select>
+                </div>
+
+                <!-- 學系下鑽篩選下拉選單 (依據當前學群即時動態更新學系列表) -->
+                <div class="relative">
+                    <label class="text-[11px] text-slate-500 dark:text-slate-400 mr-1">學系下鑽：</label>
+                    <select id="dept-select" name="dept" class="bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-[#538373] cursor-pointer max-w-[200px]" onchange="document.getElementById('disciplines-form').dispatchEvent(new Event('submit'))">
+                        <option value="" {{if eq .SelectedDept ""}}selected{{end}}>全部學系 (學群總覽)</option>
+                        {{range .Departments}}
+                        <option value="{{.}}" {{if eq $.SelectedDept .}}selected{{end}}>{{.}}</option>
+                        {{end}}
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- 4 大核心學群 KPI 指標卡片 (莫蘭迪色盤) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- 學群總錄取人數卡片 (莫蘭迪薰衣草紫) -->
