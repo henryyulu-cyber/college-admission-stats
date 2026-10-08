@@ -1,37 +1,37 @@
 {{define "content"}}
 <!-- 主容器：使用 Alpine.js 管理多選標籤與級聯下拉狀態 -->
 <div class="space-y-6" x-data="highSchoolFilter()" x-init="init()">
-    <!-- 頂部多條件篩選控制面板 (莫蘭迪風格卡片) -->
-    <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-5 shadow-sm space-y-4 transition-colors duration-200">
+    <!-- 頂部多條件篩選控制面板 (莫蘭迪風格 - 自適應寬敞結構化排版) -->
+    <div class="bg-white dark:bg-[#1e232d] border border-slate-200/90 dark:border-[#2e3746] rounded-xl p-4 sm:p-6 shadow-sm space-y-4 transition-colors duration-200">
         <!-- 標題與說明 -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 dark:border-[#2e3746] pb-3">
             <div>
-                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                <h3 class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                     <span>🔍 高中升學流向多維度篩選器</span>
-                    <span class="text-xs font-normal text-slate-500 dark:text-slate-400">(支援高中多選、大學多選、科系級聯連動)</span>
+                    <span class="text-xs font-normal text-slate-500 dark:text-slate-400 hidden sm:inline">(支援高中多選、大學多選、科系級聯連動)</span>
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">多選 2 所或以上高中且未限制特定大學/科系時，系統將自動切換為「多校 6 大指標橫向對比總表」與「分組長條圖」</p>
             </div>
-            <!-- 快捷操作：清空重設 -->
+            <!-- 快捷重設按鈕 (桌機端右上角) -->
             <div class="flex items-center gap-2">
-                <button @click="resetFilters()" type="button" class="text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-[#252c38] hover:bg-slate-200 dark:hover:bg-[#2e3746] transition-colors flex items-center gap-1 border border-slate-200 dark:border-[#2e3746]">
+                <button @click="resetFilters()" type="button" class="text-xs text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-[#252c38] hover:bg-slate-200 dark:hover:bg-[#2e3746] transition-colors flex items-center gap-1 border border-slate-200 dark:border-[#2e3746] whitespace-nowrap shrink-0">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                     重設條件
                 </button>
             </div>
         </div>
 
-        <!-- 篩選器表單網格 -->
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+        <!-- 篩選器表單核心區域：第一排（高中 / 大學 / 科系 三大核心輸入區，各佔 4 欄） -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
             <!-- 1. 選擇高中學校 (支援多選 Chip 標籤 - 莫蘭迪灰藍色系) -->
-            <div class="md:col-span-4 relative" @click.away="showSchoolDropdown = false">
+            <div class="relative" @click.away="showSchoolDropdown = false">
                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                    <span>🏫 選擇高中學校 (可多選)</span>
+                    <span class="flex items-center gap-1">🏫 選擇高中學校 <span class="text-slate-400 font-normal">(可多選)</span></span>
                     <span class="text-[11px] text-[#4f728c] dark:text-[#88b0cc] font-semibold" x-text="'已選 ' + selectedSchools.length + ' 所'"></span>
                 </label>
                 
                 <!-- 選取之高中 Chip 晶片標籤容器與點選展開輸入框 -->
-                <div class="min-h-[42px] bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#4f728c]/40 dark:focus-within:ring-[#688fa8]/40"
+                <div class="min-h-[44px] max-h-[140px] overflow-y-auto bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#4f728c]/40 dark:focus-within:ring-[#688fa8]/40"
                      @click="showSchoolDropdown = true">
                     <template x-for="school in selectedSchools" :key="school">
                         <span class="inline-flex items-center gap-1 bg-[#4f728c]/15 dark:bg-[#688fa8]/20 text-[#35546e] dark:text-[#9ac5e3] border border-[#4f728c]/30 dark:border-[#688fa8]/40 text-xs px-2 py-0.5 rounded-md font-medium">
@@ -43,7 +43,7 @@
                            x-model="schoolSearch" 
                            @focus="showSchoolDropdown = true"
                            placeholder="點此搜尋/新增高中..." 
-                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[120px] px-1 py-0.5">
+                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[120px] px-1 py-1">
                 </div>
 
                 <!-- 高中下拉選單 -->
@@ -52,7 +52,7 @@
                     <div class="border-b border-slate-100 dark:border-[#2e3746] pb-2">
                         <div class="text-[10px] text-slate-500 dark:text-slate-400 mb-1.5 flex items-center justify-between">
                             <span>⚡ 熱門高中快捷點選：</span>
-                            <span class="text-slate-400 dark:text-slate-500">支援搜尋「台南」、「南一中」等</span>
+                            <span class="text-slate-400 dark:text-slate-500">支援簡稱如「南一中」</span>
                         </div>
                         <div class="flex flex-wrap gap-1">
                             <button type="button" @click.stop="toggleSchool('國立臺南第一高級中學')" class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-[#252c38] hover:bg-[#4f728c] hover:text-white dark:hover:bg-[#688fa8] text-slate-700 dark:text-slate-300 transition-colors" :class="selectedSchools.includes('國立臺南第一高級中學') ? 'border border-[#4f728c] text-[#35546e] dark:border-[#688fa8] dark:text-[#9ac5e3] font-semibold' : ''">臺南一中</button>
@@ -79,14 +79,14 @@
             </div>
 
             <!-- 2. 選單 1：錄取學校 (大學多選 Chip 標籤 - 莫蘭迪鼠尾草綠色系) -->
-            <div class="md:col-span-3 relative" @click.away="showUnivDropdown = false">
+            <div class="relative" @click.away="showUnivDropdown = false">
                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                    <span>🎓 1. 錄取學校 (可多選)</span>
+                    <span class="flex items-center gap-1">🎓 1. 錄取學校 <span class="text-slate-400 font-normal">(可多選)</span></span>
                     <span class="text-[11px] text-[#538373] dark:text-[#8ac2ae] font-semibold" x-text="selectedUnivs.length > 0 ? '已選 ' + selectedUnivs.length + ' 校' : '全部大學'"></span>
                 </label>
                 
                 <!-- 選取之大學 Chip 晶片標籤容器 -->
-                <div class="min-h-[42px] bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#538373]/40 dark:focus-within:ring-[#6da38e]/40"
+                <div class="min-h-[44px] max-h-[140px] overflow-y-auto bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#538373]/40 dark:focus-within:ring-[#6da38e]/40"
                      @click="showUnivDropdown = true">
                     <template x-for="univ in selectedUnivs" :key="univ">
                         <span class="inline-flex items-center gap-1 bg-[#538373]/15 dark:bg-[#6da38e]/20 text-[#2e5245] dark:text-[#9bd0bc] border border-[#538373]/30 dark:border-[#6da38e]/40 text-xs px-2 py-0.5 rounded-md font-medium">
@@ -98,7 +98,7 @@
                            x-model="univSearch" 
                            @focus="showUnivDropdown = true"
                            placeholder="點此搜尋/新增大學..." 
-                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[100px] px-1 py-0.5">
+                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[100px] px-1 py-1">
                 </div>
 
                 <!-- 大學下拉選單 -->
@@ -116,14 +116,14 @@
             </div>
 
             <!-- 3. 選單 2：錄取科系 (由選定大學級聯篩選，多選 Chip 標籤 - 莫蘭迪焦糖杏色系) -->
-            <div class="md:col-span-3 relative" @click.away="showDeptDropdown = false">
+            <div class="relative" @click.away="showDeptDropdown = false">
                 <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
-                    <span>📚 2. 錄取科系 (級聯多選)</span>
+                    <span class="flex items-center gap-1">📚 2. 錄取科系 <span class="text-slate-400 font-normal">(級聯多選)</span></span>
                     <span class="text-[11px] text-[#c27d52] dark:text-[#e0a47d] font-semibold" x-text="selectedDepts.length > 0 ? '已選 ' + selectedDepts.length + ' 系' : '全部科系'"></span>
                 </label>
                 
                 <!-- 選取之科系 Chip 晶片標籤容器 -->
-                <div class="min-h-[42px] bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#c27d52]/40 dark:focus-within:ring-[#d09168]/40"
+                <div class="min-h-[44px] max-h-[140px] overflow-y-auto bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg p-1.5 flex flex-wrap gap-1.5 cursor-pointer focus-within:ring-2 focus-within:ring-[#c27d52]/40 dark:focus-within:ring-[#d09168]/40"
                      @click="showDeptDropdown = true">
                     <template x-for="dept in selectedDepts" :key="dept">
                         <span class="inline-flex items-center gap-1 bg-[#c27d52]/15 dark:bg-[#d09168]/20 text-[#734323] dark:text-[#e8b695] border border-[#c27d52]/30 dark:border-[#d09168]/40 text-xs px-2 py-0.5 rounded-md font-medium">
@@ -135,7 +135,7 @@
                            x-model="deptSearch" 
                            @focus="showDeptDropdown = true"
                            placeholder="點此搜尋/新增科系..." 
-                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[100px] px-1 py-0.5">
+                           class="bg-transparent border-none outline-none text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 flex-1 min-w-[100px] px-1 py-1">
                 </div>
 
                 <!-- 科系下拉選單 -->
@@ -155,33 +155,35 @@
                     <div x-show="filteredDepts().length === 0" class="text-xs text-slate-400 dark:text-slate-500 text-center py-2">無符合科系</div>
                 </div>
             </div>
+        </div>
 
-            <!-- 4. 學年度與查詢按鈕 -->
-            <div class="md:col-span-2 flex flex-col justify-between h-full space-y-2">
-                <div>
-                    <label for="year-select" class="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1.5">學年度 (110~115)</label>
-                    <select id="year-select" x-model.number="selectedYear" class="w-full bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#4f728c]/50 outline-none">
-                        <option value="0">全部學年度累計</option>
-                        {{range .Options.Years}}
-                        <option value="{{.}}">{{.}} 學年度</option>
-                        {{end}}
-                    </select>
-                </div>
-                
-                <div class="flex space-x-2 pt-1">
-                    <!-- 即時分析按鈕：莫蘭迪霧霾藍配色 -->
-                    <button type="button" @click="triggerHTMX()" class="flex-1 bg-[#4f728c] hover:bg-[#3d5a70] dark:bg-[#5b7f9a] dark:hover:bg-[#4f728c] text-white font-bold px-3 py-2 rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 shadow-sm">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        即時分析
-                    </button>
-                    <!-- CSV 匯出按鈕 -->
-                    <a :href="'/export/csv?high_school=' + encodeURIComponent(selectedSchools.join(',')) + '&academic_year=' + selectedYear" 
-                       class="bg-slate-100 dark:bg-[#252c38] hover:bg-slate-200 dark:hover:bg-[#2e3746] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#2e3746] font-medium px-2.5 py-2 rounded-lg text-xs transition-colors flex items-center justify-center gap-1" 
-                       title="匯出升學明細 CSV">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        匯出
-                    </a>
-                </div>
+        <!-- 篩選器表單核心區域：第二排（學年度選擇 + 動作按鈕區，大氣排版完全不擁擠） -->
+        <div class="pt-2 border-t border-slate-100 dark:border-[#2e3746] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <!-- 學年度選擇 -->
+            <div class="flex items-center gap-2">
+                <label for="year-select" class="text-xs font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">📅 學年度：</label>
+                <select id="year-select" x-model.number="selectedYear" class="bg-slate-50 dark:bg-[#13161c] border border-slate-300 dark:border-[#2e3746] rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-[#4f728c]/50 outline-none cursor-pointer">
+                    <option value="0">全部學年度累計 (110~115)</option>
+                    {{range .Options.Years}}
+                    <option value="{{.}}">{{.}} 學年度</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- 操作按鈕組 -->
+            <div class="flex items-center gap-2.5">
+                <!-- 即時分析按鈕：莫蘭迪霧霾藍配色 -->
+                <button type="button" @click="triggerHTMX()" class="flex-1 sm:flex-initial bg-[#4f728c] hover:bg-[#3d5a70] dark:bg-[#5b7f9a] dark:hover:bg-[#4f728c] text-white font-bold px-5 py-2 rounded-lg text-xs sm:text-sm transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    ⚡ 即時分析
+                </button>
+                <!-- CSV 匯出按鈕 -->
+                <a :href="'/export/csv?high_school=' + encodeURIComponent(selectedSchools.join(',')) + '&academic_year=' + selectedYear" 
+                   class="bg-slate-100 dark:bg-[#252c38] hover:bg-slate-200 dark:hover:bg-[#2e3746] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#2e3746] font-medium px-4 py-2 rounded-lg text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap" 
+                   title="匯出升學明細 CSV">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                    📥 匯出 CSV
+                </a>
             </div>
         </div>
     </div>
