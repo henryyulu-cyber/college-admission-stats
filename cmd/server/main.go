@@ -88,6 +88,28 @@ func main() {
 			// 若已有資料，記錄當前官方已核實之總筆數
 			log.Printf("[資訊] 資料庫載入完成，目前已核實記錄總數: %d 筆", status.TotalRecords)
 		}
+
+		// 檢查並安全載入已核實之公立高中教務處官方榜單 (第二階段官方分散式榜單管道)
+		honorRollCSV := filepath.Join(cfg.DataDir, "official_honor_rolls_112.csv")
+		if _, statErr := os.Stat(honorRollCSV); statErr == nil {
+			var hrCount int
+			_ = db.QueryRow("SELECT COUNT(*) FROM admissions WHERE source_dataset = '公立高中教務處官方公告錄取榜單' AND academic_year = 112").Scan(&hrCount)
+			if hrCount == 0 {
+				log.Printf("[誠信匯入] 正在匯入並校驗 112 學年度公立高中教務處官方放榜金榜真實數據...")
+				hrRep, hrErr := downloader.ImportOfficialHonorRollCSV(
+					honorRollCSV,
+					112,
+					"https://www.tnfsh.tn.edu.tw/ann/index.php",
+					"公立高中教務處官方公告錄取榜單",
+					"公立高中教務處聯合發布",
+				)
+				if hrErr != nil {
+					log.Printf("[警告] 匯入公立高中官方榜單失敗: %v", hrErr)
+				} else if hrRep != nil {
+					log.Printf("[成功] 112 學年度公立高中官方榜單已核實入庫 (%d 筆高中升學明細, SHA-256: %s)", hrRep.ValidRows, hrRep.SHA256Hash[:16]+"...")
+				}
+			}
+		}
 	}
 
 	// 5. 初始化業務邏輯與報表匯出服務層

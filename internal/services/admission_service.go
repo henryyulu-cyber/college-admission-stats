@@ -486,7 +486,7 @@ func (s *AdmissionService) GetUniversityOrigins(ctx context.Context, univName, d
 		high_school_type,
 		SUM(student_count) AS students
 	FROM admissions
-	WHERE university_name = ?
+	WHERE university_name = ? AND high_school_name != '教育部大專校院核定生源母體'
 	`
 	args := []interface{}{univName}
 
@@ -813,7 +813,7 @@ func (s *AdmissionService) GetMedicalHighSchoolRanking(ctx context.Context, year
 			COALESCE(SUM(CASE WHEN department_name IN ('中醫學系', '中醫學系甲組', '中醫學系乙組') THEN student_count ELSE 0 END), 0) AS chinese_med_cnt,
 			COALESCE(SUM(student_count), 0) AS total_cnt
 		FROM admissions
-		WHERE %s
+		WHERE %s AND high_school_name != '教育部大專校院核定生源母體'
 	`, deptCondition)
 
 	var args []interface{}
@@ -923,7 +923,7 @@ func (s *AdmissionService) GetMedicalUnivSources(ctx context.Context, univName, 
 			high_school_type,
 			SUM(student_count) AS students
 		FROM admissions
-		WHERE university_name = ? AND (department_name = ? OR ? = '')
+		WHERE university_name = ? AND (department_name = ? OR ? = '') AND high_school_name != '教育部大專校院核定生源母體'
 	`
 	args := []interface{}{univName, deptName, deptName}
 	if year > 0 {
@@ -1122,7 +1122,7 @@ func (s *AdmissionService) GetDisciplineTopHighSchools(ctx context.Context, grou
 			high_school_type,
 			SUM(student_count) AS students
 		FROM admissions
-		WHERE (discipline_group = ? OR ? = '') AND (department_name = ? OR ? = '')
+		WHERE (discipline_group = ? OR ? = '') AND (department_name = ? OR ? = '') AND high_school_name != '教育部大專校院核定生源母體'
 	`
 	args := []interface{}{groupName, groupName, deptName, deptName}
 	if year > 0 {

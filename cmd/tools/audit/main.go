@@ -121,6 +121,30 @@ func main() {
 			fmt.Printf("  ⚠️ 警告！發現 %d 筆 synthetic 資料混入，違反資料誠信規範！\n", syntheticCount)
 		}
 	}
+	// -----------------------------------------------------------------------------
+	// 盤點項目 5: 公立高中官方公告榜單查核 (真實升學流向數據)
+	// -----------------------------------------------------------------------------
+	fmt.Println("\n【盤點項目五：公立高中教務處官方放榜金榜數據查核 (以 112 學年度臺大醫/電機為例)】")
+	queryHS := `SELECT high_school_name, university_name, department_name, student_count, source_dataset, source_url
+	            FROM admissions
+	            WHERE academic_year = 112 
+	              AND department_name IN ('醫學系', '電機工程學系')
+	              AND university_name = '國立臺灣大學'
+	              AND high_school_name != '教育部大專校院核定生源母體'
+	            ORDER BY department_name DESC, student_count DESC`
+	hsRows, err := db.Query(queryHS)
+	if err != nil {
+		log.Printf("[錯誤] 查詢公立高中榜單失敗: %v", err)
+	} else {
+		for hsRows.Next() {
+			var hsName, uName, dName, dsName, sURL string
+			var count int
+			if err := hsRows.Scan(&hsName, &uName, &dName, &count, &dsName, &sURL); err == nil {
+				fmt.Printf("  🏆 %s ➔ %s %s: 官方公佈 %d 人 [來源: %s]\n", hsName, uName, dName, count, dsName)
+			}
+		}
+		hsRows.Close()
+	}
 
 	fmt.Println("\n================================================================================")
 	fmt.Println("  盤點完成，所有數據皆具備官方開放端點、SHA-256 數位指紋與非負人數驗證！")

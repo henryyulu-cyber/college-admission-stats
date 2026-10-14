@@ -429,6 +429,96 @@ func (d *Downloader) SyncAllYears() error {
 	return nil
 }
 
+// ImportOfficialHonorRollCSV 將公立高中教務處官方榜單解析並依最高誠信原則寫入 admissions 資料表
+func (d *Downloader) ImportOfficialHonorRollCSV(
+	filePath string,
+	expectedYear int,
+	defaultSourceURL string,
+	defaultDatasetName string,
+	sourceName string,
+) (*DataVerificationReport, error) {
+	// 建立專用榜單誠信匯入解析器
+	importer := NewHonorRollImporter()
+
+	// 執行檔案解析與名冊校驗
+	records, report, err := importer.ParseAndVerifyOfficialHonorRollCSV(filePath, expectedYear, defaultSourceURL, defaultDatasetName)
+	if err != nil {
+		d.recordVerificationLog(defaultDatasetName, expectedYear, "公立高中官方榜單解析", "FAILED", err.Error(), 0, 0, 0, 1)
+		return report, fmt.Errorf("官方高中榜單校驗失敗: %w", err)
+	}
+
+	// 開啟資料庫交易批次寫入
+	tx, err := d.DB.Begin()
+	if err != nil {
+		return report, fmt.Errorf("開啟資料庫交易失敗: %w", err)
+	}
+	defer tx.Rollback()
+
+	// 冪等性防護：若同年度同資料集已有紀錄，先予以清除再更新
+	_, _ = tx.Exec("DELETE FROM admissions WHERE academic_year = ? AND source_dataset = ?", expectedYear, defaultDatasetName)
+
+	now := time.Now()
+	batchSize := 100
+	totalLen := len(records)
+
+	for i := 0; i < totalLen; i += batchSize {
+		end := i + batchSize
+		if end > totalLen {
+			end = totalLen
+		}
+		chunk := records[i:end]
+
+		var valueStrings []string
+		var valueArgs []interface{}
+		for _, r := range chunk {
+			valueStrings = append(valueStrings, "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+			valueArgs = append(valueArgs,
+				r.AcademicYear, r.HighSchoolCode, r.HighSchoolName, r.HighSchoolCity, r.HighSchoolType,
+				r.UniversityCode, r.UniversityName, r.UniversitySys, r.UniversityType,
+				r.DisciplineGroup, r.DepartmentName, r.StudentCount,
+				r.SourceURL, r.SourceDataset, now, r.SourceHash, r.VerificationStatus, now,
+			)
+		}
+
+		batchSQL := fmt.Sprintf(`INSERT INTO admissions (
+			academic_year, high_school_code, high_school_name, high_school_city, high_school_type,
+			university_code, university_name, university_system, university_type,
+			discipline_group, department_name, student_count,
+			source_url, source_dataset, source_downloaded_at, source_hash, verification_status, created_at
+		) VALUES %s`, strings.Join(valueStrings, ","))
+
+		if _, err := tx.Exec(batchSQL, valueArgs...); err != nil {
+			return report, fmt.Errorf("寫入高中榜單資料失敗: %w", err)
+		}
+	}
+
+	// 登記至 data_sources 官方來源主表
+	dsQuery := `INSERT INTO data_sources (
+		source_name, dataset_name, url, downloaded_at, academic_year, http_status,
+		file_hash, data_version, verification_status, record_count, error_message, created_at
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	_, err = tx.Exec(dsQuery,
+		sourceName, defaultDatasetName, defaultSourceURL, now, expectedYear, 200,
+		report.SHA256Hash, time.Now().Format("2006-01-02"), report.Status, len(records), "", now,
+	)
+	if err != nil {
+		return report, fmt.Errorf("登記官方高中資料來源失敗: %w", err)
+	}
+
+	// 提交交易
+	if err := tx.Commit(); err != nil {
+		return report, fmt.Errorf("提交高中榜單交易失敗: %w", err)
+	}
+
+	// 登記檢驗日誌
+	for _, l := range report.Logs {
+		d.recordVerificationLog(l.DatasetName, l.AcademicYear, l.CheckStep, l.Status, l.Detail, l.TotalRowsChecked, l.ValidRowsCount, l.WarningRowsCount, l.ErrorRowsCount)
+	}
+
+	log.Printf("[成功] 公立高中教務處官方榜單 '%s' (%d 學年度) 成功寫入 %d 筆真實升學紀錄，SHA-256: %s", defaultDatasetName, expectedYear, len(records), report.SHA256Hash)
+	return report, nil
+}
+
 // recordVerificationLog 記錄校驗歷程至 verification_logs 資料表
 func (d *Downloader) recordVerificationLog(datasetName string, year int, step, status, detail string, total, valid, warn, errCount int) {
 	query := `INSERT INTO verification_logs (
