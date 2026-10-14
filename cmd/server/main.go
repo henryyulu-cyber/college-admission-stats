@@ -89,8 +89,8 @@ func main() {
 			log.Printf("[資訊] 資料庫載入完成，目前已核實記錄總數: %d 筆", status.TotalRecords)
 		}
 
-		// 檢查並安全載入已核實之公立高中教務處官方榜單 (涵蓋 110、111、112、113 學年度)
-		for _, yr := range []int{110, 111, 112, 113} {
+		// 檢查並安全載入已核實之公立高中教務處官方榜單 (涵蓋 110~115 全量學年度)
+		for _, yr := range []int{110, 111, 112, 113, 114, 115} {
 			honorRollCSV := filepath.Join(cfg.DataDir, fmt.Sprintf("official_honor_rolls_%d.csv", yr))
 			if _, statErr := os.Stat(honorRollCSV); statErr == nil {
 				var hrCount int
