@@ -454,8 +454,9 @@ func (d *Downloader) ImportOfficialHonorRollCSV(
 	}
 	defer tx.Rollback()
 
-	// 冪等性防護：若同年度同資料集已有紀錄，先予以清除再更新
-	_, _ = tx.Exec("DELETE FROM admissions WHERE academic_year = ? AND source_dataset = ?", expectedYear, defaultDatasetName)
+	// 冪等性防護：若同年度已有高中榜單紀錄，先予以清除再更新，避免重複計數
+	_, _ = tx.Exec("DELETE FROM admissions WHERE academic_year = ? AND high_school_name != '教育部大專校院核定生源母體'", expectedYear)
+	_, _ = tx.Exec("DELETE FROM data_sources WHERE academic_year = ? AND source_name = ?", expectedYear, sourceName)
 
 	now := time.Now()
 	batchSize := 100

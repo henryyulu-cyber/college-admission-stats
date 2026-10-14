@@ -89,24 +89,27 @@ func main() {
 			log.Printf("[資訊] 資料庫載入完成，目前已核實記錄總數: %d 筆", status.TotalRecords)
 		}
 
-		// 檢查並安全載入已核實之公立高中教務處官方榜單 (第二階段官方分散式榜單管道)
-		honorRollCSV := filepath.Join(cfg.DataDir, "official_honor_rolls_112.csv")
-		if _, statErr := os.Stat(honorRollCSV); statErr == nil {
-			var hrCount int
-			_ = db.QueryRow("SELECT COUNT(*) FROM admissions WHERE source_dataset = '公立高中教務處官方公告錄取榜單' AND academic_year = 112").Scan(&hrCount)
-			if hrCount == 0 {
-				log.Printf("[誠信匯入] 正在匯入並校驗 112 學年度公立高中教務處官方放榜金榜真實數據...")
-				hrRep, hrErr := downloader.ImportOfficialHonorRollCSV(
-					honorRollCSV,
-					112,
-					"https://www.tnfsh.tn.edu.tw/ann/index.php",
-					"公立高中教務處官方公告錄取榜單",
-					"公立高中教務處聯合發布",
-				)
-				if hrErr != nil {
-					log.Printf("[警告] 匯入公立高中官方榜單失敗: %v", hrErr)
-				} else if hrRep != nil {
-					log.Printf("[成功] 112 學年度公立高中官方榜單已核實入庫 (%d 筆高中升學明細, SHA-256: %s)", hrRep.ValidRows, hrRep.SHA256Hash[:16]+"...")
+		// 檢查並安全載入已核實之公立高中教務處官方榜單 (涵蓋 110、111、112、113 學年度)
+		for _, yr := range []int{110, 111, 112, 113} {
+			honorRollCSV := filepath.Join(cfg.DataDir, fmt.Sprintf("official_honor_rolls_%d.csv", yr))
+			if _, statErr := os.Stat(honorRollCSV); statErr == nil {
+				var hrCount int
+				_ = db.QueryRow("SELECT COUNT(*) FROM admissions WHERE academic_year = ? AND high_school_name != '教育部大專校院核定生源母體'", yr).Scan(&hrCount)
+				if hrCount == 0 {
+					datasetName := fmt.Sprintf("公立高中教務處官方公告錄取榜單-%d學年度", yr)
+					log.Printf("[誠信匯入] 正在匯入並校驗 %d 學年度公立高中教務處官方放榜金榜真實數據...", yr)
+					hrRep, hrErr := downloader.ImportOfficialHonorRollCSV(
+						honorRollCSV,
+						yr,
+						"https://www.tnfsh.tn.edu.tw/ann/index.php",
+						datasetName,
+						"公立高中教務處聯合發布",
+					)
+					if hrErr != nil {
+						log.Printf("[警告] 匯入 %d 學年度公立高中官方榜單失敗: %v", yr, hrErr)
+					} else if hrRep != nil {
+						log.Printf("[成功] %d 學年度公立高中官方榜單已核實入庫 (%d 筆高中升學明細, SHA-256: %s)", yr, hrRep.ValidRows, hrRep.SHA256Hash[:16]+"...")
+					}
 				}
 			}
 		}
