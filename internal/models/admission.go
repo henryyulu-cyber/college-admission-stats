@@ -5,7 +5,75 @@ import (
 	"time"
 )
 
-// AdmissionRecord 定義單筆高中升學大專校院系所之詳細紀錄
+// 定義資料誠信狀態常數
+const (
+	// VerificationStatusVerifiedOfficial 代表已由官方來源取得並通過 SHA-256 與格式嚴格校驗
+	VerificationStatusVerifiedOfficial = "verified_official"
+	// VerificationStatusPartiallyVerified 代表部分欄位或年度仍待查證
+	VerificationStatusPartiallyVerified = "partially_verified"
+	// VerificationStatusUnverified 代表沒有足夠官方依據
+	VerificationStatusUnverified = "unverified"
+	// VerificationStatusSynthetic 代表測試用合成資料，正式環境嚴格禁止載入
+	VerificationStatusSynthetic = "synthetic"
+)
+
+// DataSource 定義官方資料集之來源溯源與下載查核資訊
+type DataSource struct {
+	// ID 為資料庫主鍵
+	ID int64 `json:"id" db:"id"`
+	// SourceName 為官方機構名稱 (例如 "教育部統計處", "政府資料開放平臺")
+	SourceName string `json:"source_name" db:"source_name"`
+	// DatasetName 為資料集完整名稱 (例如 "大專校院各校科系別學生數")
+	DatasetName string `json:"dataset_name" db:"dataset_name"`
+	// URL 為原始下載網址或開放 API 端點
+	URL string `json:"url" db:"url"`
+	// DownloadedAt 為資料下載日期與時間
+	DownloadedAt time.Time `json:"downloaded_at" db:"downloaded_at"`
+	// AcademicYear 為資料所屬學年度 (民國年)
+	AcademicYear int `json:"academic_year" db:"academic_year"`
+	// HTTPStatus 為下載時之 HTTP 回應狀態碼 (例如 200)
+	HTTPStatus int `json:"http_status" db:"http_status"`
+	// FileHash 為原始檔案之 SHA-256 完整雜湊值，用於防竄改比對
+	FileHash string `json:"file_hash" db:"file_hash"`
+	// DataVersion 為資料版本或官方更新日期
+	DataVersion string `json:"data_version" db:"data_version"`
+	// VerificationStatus 為資料驗證狀態 (verified_official, partially_verified 等)
+	VerificationStatus string `json:"verification_status" db:"verification_status"`
+	// RecordCount 為此資料集成功解析與匯入之筆數
+	RecordCount int `json:"record_count" db:"record_count"`
+	// ErrorMessage 為下載或校驗時產生的警告或錯誤摘要
+	ErrorMessage string `json:"error_message" db:"error_message"`
+	// CreatedAt 為本筆記錄寫入時間
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+}
+
+// VerificationLog 定義資料管線校驗日誌與檢驗報告紀錄
+type VerificationLog struct {
+	// ID 為資料庫主鍵
+	ID int64 `json:"id" db:"id"`
+	// DatasetName 為所校驗之資料集名稱
+	DatasetName string `json:"dataset_name" db:"dataset_name"`
+	// AcademicYear 為學年度
+	AcademicYear int `json:"academic_year" db:"academic_year"`
+	// CheckStep 為目前校驗步驟 (如 "HTTP狀態檢查", "SHA256驗證", "欄位完整性檢查", "數值非負檢查")
+	CheckStep string `json:"check_step" db:"check_step"`
+	// Status 為該步驟之狀態 ("PASSED", "WARNING", "FAILED")
+	Status string `json:"status" db:"status"`
+	// Detail 為檢查細節或異常說明
+	Detail string `json:"detail" db:"detail"`
+	// TotalRowsChecked 為檢查總列數
+	TotalRowsChecked int `json:"total_rows_checked" db:"total_rows_checked"`
+	// ValidRowsCount 為符合規格之有效列數
+	ValidRowsCount int `json:"valid_rows_count" db:"valid_rows_count"`
+	// WarningRowsCount 為存在警告之列數 (如非官方代碼但有校名)
+	WarningRowsCount int `json:"warning_rows_count" db:"warning_rows_count"`
+	// ErrorRowsCount 為存在致命錯誤之列數 (如負數、欄位缺失)
+	ErrorRowsCount int `json:"error_rows_count" db:"error_rows_count"`
+	// CreatedAt 為紀錄建立時間戳記
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
+}
+
+// AdmissionRecord 定義單筆高中升學大專校院系所之詳細紀錄 (包含完整資料誠信溯源欄位)
 type AdmissionRecord struct {
 	// ID 為資料庫主鍵編號
 	ID int64 `json:"id" db:"id"`
@@ -31,8 +99,18 @@ type AdmissionRecord struct {
 	DisciplineGroup string `json:"discipline_group" db:"discipline_group"`
 	// DepartmentName 為錄取學系或學程名稱 (例如 "資訊工程學系")
 	DepartmentName string `json:"department_name" db:"department_name"`
-	// StudentCount 為錄取或就讀之學生人數
+	// StudentCount 為錄取或就讀之學生人數 (必須 >= 0)
 	StudentCount int `json:"student_count" db:"student_count"`
+	// SourceURL 為原始官方資料下載網址或開放 API 來源
+	SourceURL string `json:"source_url" db:"source_url"`
+	// SourceDataset 為所屬官方資料集完整名稱
+	SourceDataset string `json:"source_dataset" db:"source_dataset"`
+	// SourceDownloadedAt 為原始資料下載之時間戳記
+	SourceDownloadedAt time.Time `json:"source_downloaded_at" db:"source_downloaded_at"`
+	// SourceHash 為原始下載檔案之 SHA-256 驗證雜湊值
+	SourceHash string `json:"source_hash" db:"source_hash"`
+	// VerificationStatus 為資料誠信驗證狀態 (verified_official, partially_verified, unverified, synthetic)
+	VerificationStatus string `json:"verification_status" db:"verification_status"`
 	// CreatedAt 為記錄寫入資料庫之時間戳記
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }

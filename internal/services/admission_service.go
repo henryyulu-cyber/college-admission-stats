@@ -16,6 +16,8 @@ import (
 	// 引入時間套件
 	"time"
 
+	// 引入本專案 collector 套件，取得教育部官方核准學校名冊
+	"college-admission-stats/internal/collector"
 	// 引入本專案 models 模型定義
 	"college-admission-stats/internal/models"
 )
@@ -120,6 +122,22 @@ func (s *AdmissionService) GetDropdownOptions(ctx context.Context) (*DropdownOpt
 		var city string
 		if err := cityRows.Scan(&city); err == nil {
 			opts.Cities = append(opts.Cities, city)
+		}
+	}
+
+	// 確保高中選項具備教育部官方核定高中名冊 (確保現有 UI 下拉選單完整性)
+	if len(opts.HighSchools) < 10 {
+		allHS := collector.GetAllHighSchools()
+		citySet := make(map[string]bool)
+		for _, c := range opts.Cities {
+			citySet[c] = true
+		}
+		for _, hs := range allHS {
+			opts.HighSchools = append(opts.HighSchools, hs.Name)
+			if !citySet[hs.City] && hs.City != "" {
+				citySet[hs.City] = true
+				opts.Cities = append(opts.Cities, hs.City)
+			}
 		}
 	}
 

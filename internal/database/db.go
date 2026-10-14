@@ -59,11 +59,11 @@ func InitDB(dbPath string) (*sql.DB, error) {
 	return db, nil
 }
 
-// createTables 建立 admissions (升學明細表) 與 sync_logs (同步日誌表) 以及複合索引
+// createTables 建立 admissions (升學明細表)、data_sources (官方來源追蹤表)、verification_logs (檢驗日誌表) 與索引
 func createTables(db *sql.DB) error {
 	// 定義資料庫 Schema 的 DDL 語法
 	schema := `
-	-- 升學明細主資料表：儲存高中錄取各大學系所人數
+	-- 升學明細主資料表：儲存高中錄取各大學系所人數與溯源資訊
 	CREATE TABLE IF NOT EXISTS admissions (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,                      -- 自動遞增主鍵
 		academic_year INTEGER NOT NULL,                            -- 學年度 (如 110, 111, 112, 113, 114, 115)
@@ -77,11 +77,48 @@ func createTables(db *sql.DB) error {
 		university_type TEXT NOT NULL DEFAULT '國立',               -- 大學公私立 (國立/私立)
 		discipline_group TEXT NOT NULL DEFAULT '未分類',            -- 教育部 18 大學群名稱
 		department_name TEXT NOT NULL,                             -- 學系/學程名稱
-		student_count INTEGER NOT NULL DEFAULT 1,                  -- 錄取/入學學生人數
+		student_count INTEGER NOT NULL DEFAULT 1,                  -- 錄取/入學學生人數 (必須 >= 0)
+		source_url TEXT NOT NULL DEFAULT '',                       -- 原始官方下載網址或開放 API 來源
+		source_dataset TEXT NOT NULL DEFAULT '',                   -- 官方資料集名稱
+		source_downloaded_at DATETIME,                             -- 下載時間戳記
+		source_hash TEXT NOT NULL DEFAULT '',                      -- 原始檔案 SHA-256 驗證雜湊值
+		verification_status TEXT NOT NULL DEFAULT 'unverified',    -- 驗證狀態 (verified_official, partially_verified, unverified, synthetic)
 		created_at DATETIME DEFAULT CURRENT_TIMESTAMP              -- 記錄建立時間
 	);
 
-	-- 數據同步日誌表：記錄各學年度資料擷取與更新歷程
+	-- 官方資料來源追蹤主表：記錄每個取得之公開資料集檔案元資料
+	CREATE TABLE IF NOT EXISTS data_sources (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,                      -- 自動遞增主鍵
+		source_name TEXT NOT NULL,                                 -- 官方機構名稱 (例如 "教育部統計處")
+		dataset_name TEXT NOT NULL,                                -- 資料集名稱 (例如 "大專校院各校科系別學生數")
+		url TEXT NOT NULL,                                         -- 下載網址或 API 端點
+		downloaded_at DATETIME NOT NULL,                           -- 下載時間戳記
+		academic_year INTEGER NOT NULL,                            -- 資料所屬學年度
+		http_status INTEGER NOT NULL DEFAULT 200,                  -- 下載 HTTP 狀態碼
+		file_hash TEXT NOT NULL,                                   -- 檔案 SHA-256 雜湊
+		data_version TEXT NOT NULL DEFAULT '',                     -- 資料版本/更新日期
+		verification_status TEXT NOT NULL DEFAULT 'verified_official', -- 驗證狀態
+		record_count INTEGER NOT NULL DEFAULT 0,                   -- 成功寫入筆數
+		error_message TEXT NOT NULL DEFAULT '',                    -- 異常或警告訊息
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP              -- 登記時間
+	);
+
+	-- 資料誠信校驗與稽核日誌表：記錄各項驗證指標執行紀錄
+	CREATE TABLE IF NOT EXISTS verification_logs (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,                      -- 自動遞增主鍵
+		dataset_name TEXT NOT NULL,                                -- 被校驗之資料集
+		academic_year INTEGER NOT NULL,                            -- 學年度
+		check_step TEXT NOT NULL,                                  -- 校驗步驟 (HTTP狀態, SHA256, 欄位檢查等)
+		status TEXT NOT NULL,                                      -- 校驗結果 (PASSED, WARNING, FAILED)
+		detail TEXT NOT NULL DEFAULT '',                           -- 詳細說明或錯誤原因
+		total_rows_checked INTEGER NOT NULL DEFAULT 0,             -- 檢驗總列數
+		valid_rows_count INTEGER NOT NULL DEFAULT 0,               -- 有效筆數
+		warning_rows_count INTEGER NOT NULL DEFAULT 0,             -- 警告筆數
+		error_rows_count INTEGER NOT NULL DEFAULT 0,               -- 錯誤筆數
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP              -- 記錄時間
+	);
+
+	-- 數據同步日誌表：記錄系統執行歷史
 	CREATE TABLE IF NOT EXISTS sync_logs (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,                      -- 自動遞增主鍵
 		academic_year INTEGER NOT NULL,                            -- 同步學年度
@@ -121,6 +158,12 @@ func createTables(db *sql.DB) error {
 
 	-- 建立複合索引：優化學群生源高中排行統計效能
 	CREATE INDEX IF NOT EXISTS idx_adm_group_hs ON admissions(discipline_group, high_school_name);
+
+	-- 建立索引：優化資料誠信狀態過濾查詢
+	CREATE INDEX IF NOT EXISTS idx_adm_ver_status ON admissions(verification_status);
+
+	-- 建立索引：優化資料來源依年度查詢
+	CREATE INDEX IF NOT EXISTS idx_ds_year_status ON data_sources(academic_year, verification_status);
 	`
 
 	// 執行 DDL 語法建立資料表與索引
